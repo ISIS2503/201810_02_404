@@ -4,6 +4,8 @@
 // Constantes del programa
 //---------------------------------------------------------------
 
+
+
 /**
  * Número de filas del teclado
  */
@@ -68,7 +70,7 @@ const int healtCheckTime = 100; // In milliseconds.
 /**
  * Máximo tiempo de la puerta abierta
  */
-const int maxOpenedTime = 1000; // En milis
+const int maxOpenedTime = 30000; // En milis
 /**
  * Número de intentos antes de alerta.
  */
@@ -85,6 +87,12 @@ int mSHC;
 int mSOT;
 boolean isOpen = false;
 int tries = 0;
+
+boolean bloqueo = false;
+int id = 555;
+String mensaje = "";
+String temp = "";
+
 
 void setup() {
   Serial.begin(9600);
@@ -108,54 +116,97 @@ void loop() {
     //Serial.println("HEALTCHECK");
     mSHC = millis();
   }
+
   // Envía alerta de puerta abierta
   if (isOpen && millis() > maxOpenedTime + mSOT) {
-    //Serial.println("ALERTA:0");
+    bloqueo = true;
+    analogWrite(R, 0);
+    analogWrite(G, 255);
+    analogWrite(B, 255);
+    temp = "ALERTA::0::";
+    mensaje = temp + id;
+    Serial.println(mensaje);
   } else if (!isOpen) {
     mSOT = millis();
   }
-
-  // Enciende el LED RGB si está abierto
-  if (isOpen) {
-    analogWrite(R, 255);
-    analogWrite(G, 0);
-    analogWrite(B, 255);
-  } else {
-    analogWrite(R, 255);
-    analogWrite(G, 255);
-    analogWrite(B, 0);
-  }
+  
   // Enciende el led si hay presencia. 
-  if (digitalRead(ir)) {
-    //Serial.println("ALERTA:1");
+  if (digitalRead(ir) && isOpen) {
+    temp = "ALERTA::2::";
+    mensaje = temp + id;
+    Serial.println(mensaje);
     digitalWrite(led, HIGH);
   }
-  
+
+  if(!bloqueo)isOpen = false;
   char key = keypad.getKey();
+  if(digitalRead(boton) == 1){
+    isOpen = true;
+  }
+  else{
   if (key != NO_KEY) {
     // Cerrar la puerta
     if (key == 'C') {
       isOpen = false;
-    } else if (!isOpen) {
-      if (i == 4) {
+      bloqueo = false;
+      tries = 0;
+    }else if (key == '#') {
+      if(i>0)i--;
+    }else if (!isOpen) {
+        password[i++] = key;
+        if (i == 4) {
+          //Serial.println("Prueba");
         if (existsPassword()) {
+          //Serial.println("Bien");
           i = 0;
           isOpen = true;
           mSOT = millis();
+          analogWrite(R, 255);
+          analogWrite(G, 0);
+          analogWrite(B, 255);
+          bloqueo = true;
         } else {
+          //Serial.println("Mal");
           if (++tries >= INTENTOS) {
-            Serial.println("ALERTA:1");
+            temp = "ALERTA::0::";
+            mensaje = temp + id;
+            Serial.println(mensaje);
+            analogWrite(R, 0);
+            analogWrite(G, 255);
+            analogWrite(B, 255);
+            bloqueo = true;
+          }else{
+           analogWrite(R, 0);
+           analogWrite(G, 255);
+           analogWrite(B, 255);
+           delay(1000); 
+           analogWrite(R, 255);
+           analogWrite(G, 255);
+           analogWrite(B, 0);
+           
           }
           i = 0;
-          analogWrite(R, 0);
-          analogWrite(G, 255);
-          analogWrite(B, 255);
-        }
-      } else {
-        password[i++] = key;
+         }
       }
-      i++;
     }
+    }
+  }
+
+    // Enciende el LED RGB si está abierto
+  if(!bloqueo){
+    if (isOpen) {
+      analogWrite(R, 255);
+      analogWrite(G, 0);
+      analogWrite(B, 255);
+    }
+    else{
+      analogWrite(R, 255);
+      analogWrite(G, 255);
+      analogWrite(B, 0);
+    }
+  }
+  else{
+    //Serial.println("BLOQUEADO");
   }
 }
 
@@ -175,4 +226,3 @@ boolean existsPassword() {
   }
   return existsPassword;
 }
-
