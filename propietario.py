@@ -26,15 +26,15 @@ producer = KafkaProducer(bootstrap_servers=['broker1:8090'])
 # Asynchronous by default
 if tipo is "0" and leer is not "0"
 	future = producer.send('propietario.apto1.alerta.abierta', b'raw_bytes')
-	print("ALERTA 0 = TIEMPO MAXIMO DE APERTURA SOBREPASADO \n FECHA: "+leer["sensetime"])
+	print("ALERTA 0 = TIEMPO MAXIMO DE APERTURA SOBREPASADO \n FECHA: ",leer["sensetime"])
 	leer = "0"
 if tipo is "1" and leer is not "0"
 	future = producer.send('propietario.apto1.alerta.permiso', b'raw_bytes')
-	print("ALERTA 1 = INTENTOS DE APERTURA SOBREPASADOS \n FECHA: "+leer["sensetime"])
+	print("ALERTA 1 = INTENTOS DE APERTURA SOBREPASADOS \n FECHA: ",leer["sensetime"])
 	leer = "0"
 if tipo is "2" and leer is not "0"
 	future = producer.send('propietario.apto1.alerta.sospecha', b'raw_bytes')
-	print("ALERTA 2 = SENSOR DE PRESENCIA ACTIVADO \n FECHA: "+leer["sensetime"])
+	print("ALERTA 2 = SENSOR DE PRESENCIA ACTIVADO \n FECHA: ",leer["sensetime"])
 	leer = "0"
 
 # Block for 'synchronous' sends
