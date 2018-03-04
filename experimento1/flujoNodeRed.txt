@@ -1,0 +1,196 @@
+[
+    {
+        "id": "307fa89.965cc58",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "5348aa44.7f3b84",
+        "type": "serial in",
+        "z": "307fa89.965cc58",
+        "name": "sensorCerradura",
+        "serial": "1bd1c587.f4082a",
+        "x": 180,
+        "y": 300,
+        "wires": [
+            [
+                "ae52a1db.237ed"
+            ]
+        ]
+    },
+    {
+        "id": "860955d2.2772f8",
+        "type": "debug",
+        "z": "307fa89.965cc58",
+        "name": "Sensor After Format",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 620,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "ae52a1db.237ed",
+        "type": "function",
+        "z": "307fa89.965cc58",
+        "name": "SensorFormat",
+        "func": "var res = {};\nvar tempArray = [];\nvar alertType = \"\";\nvar id = \"\";\n\ntempString = msg.payload;\ntempArray = tempString.split(\"::\");\nalertType = tempArray[1];\nid = tempArray[2];\nres.topic = \"alert\";\nres.payload = {};\n\nres.payload = {\"type\": parseInt(alertType), \"idCerradura\": parseInt(id)}\n\nreturn res;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 300,
+        "wires": [
+            [
+                "860955d2.2772f8",
+                "7f7713ac.d2b1ac"
+            ]
+        ]
+    },
+    {
+        "id": "46b517ab.597e08",
+        "type": "inject",
+        "z": "307fa89.965cc58",
+        "name": "sensorTime",
+        "topic": "time",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 380,
+        "wires": [
+            [
+                "21cf0175.90247e"
+            ]
+        ]
+    },
+    {
+        "id": "21cf0175.90247e",
+        "type": "function",
+        "z": "307fa89.965cc58",
+        "name": "TimeFormat",
+        "func": "var res = {};\n\n\nres.payload = new Date(msg.payload);\nres.topic = msg.topic;\n\nreturn res;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "7f7713ac.d2b1ac",
+                "e73c97f2.acb8a8"
+            ]
+        ]
+    },
+    {
+        "id": "7f7713ac.d2b1ac",
+        "type": "function",
+        "z": "307fa89.965cc58",
+        "name": "mergeAlert&Time",
+        "func": "context.data = context.data || {};\n\nswitch (msg.topic) \n{\n    case \"time\":\n        context.data.sensetime = msg.payload;\n        msg = null;\n        break;\n    case \"alert\":\n        context.data.alert = msg.payload;\n        msg = null;\n        break;\n    default:\n        msg = null;\n    \tbreak;\n}\n\nif(context.data.sensetime != null && context.data.alert != null) \n{\n\tres = {};\n    res.payload = JSON.stringify(context.data);\n    res.topic = \"sensorAlert\";\n    context.data = null;\n\t\treturn res;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "38f8058c.0328fa",
+                "c7a1630c.a12fb",
+                "5ca77cbe.def294"
+            ]
+        ]
+    },
+    {
+        "id": "38f8058c.0328fa",
+        "type": "debug",
+        "z": "307fa89.965cc58",
+        "name": "Mege After Format",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 870,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e73c97f2.acb8a8",
+        "type": "debug",
+        "z": "307fa89.965cc58",
+        "name": "Time After Format",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 610,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "c7a1630c.a12fb",
+        "type": "mqtt out",
+        "z": "307fa89.965cc58",
+        "name": "",
+        "topic": "seguridad.apto1.alerta",
+        "qos": "0",
+        "retain": "false",
+        "broker": "40413f4b.d279d",
+        "x": 880,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "5ca77cbe.def294",
+        "type": "mqtt out",
+        "z": "307fa89.965cc58",
+        "name": "",
+        "topic": "propietario.apto1.alerta",
+        "qos": "0",
+        "retain": "false",
+        "broker": "40413f4b.d279d",
+        "x": 890,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "1bd1c587.f4082a",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "COM5",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "40413f4b.d279d",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "MyIP",
+        "broker": "192.168.0.3",
+        "port": "8083",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
