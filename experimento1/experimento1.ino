@@ -4,21 +4,19 @@
 // Constantes del programa
 //---------------------------------------------------------------
 
-
-
 /**
- * Número de filas del teclado
- */
+* Número de filas del teclado
+**/
 const byte rows = 4;
 
 /**
- * Número de columnas del teclado
- */
+* Número de columnas del teclado
+**/
 const byte cols = 4;
 
 /**
- * Matriz de caracteres del teclado
- */
+* Matriz de caracteres del teclado
+**/
 char keys[rows][cols] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
@@ -27,76 +25,99 @@ char keys[rows][cols] = {
 };
 
 /**
- * Pin rojo del LED RGB
- */
+* Pin rojo del LED RGB
+**/
 const int R = 13;
 /**
- * Pin verde del LED RGB
- */
+* Pin verde del LED RGB
+**/
 const int G = 12;
-/**
- * Pin azul del LED RGB
- */
+/*
+* Pin azul del LED RGB
+**/
 const int B = 11;
 /**
- * Pin LED del Infrarojo
- */
+* Pin LED del Infrarojo
+**/
 const int led = 0;
 /**
- * Pin del infarojo
- */
+* Pin del infarojo
+**/
 const int ir = 1;
 /**
- * Pin del pulsador
- */
+* Pin del pulsador
+**/
 const int boton = 10;
 /**
- * Pines de las columnas
- */
-byte colPins[cols] = {5, 4, 3, 2}; //connect to the row pinouts of the keypad
+* ID de la cerradura
+**/
+const int id = 555;
 /**
- * Pines de las filas
- */
-byte rowPins[rows] = {9, 8, 7, 6}; //connect to the column pinouts of the keypad
-/**
- * Keypad
- */
-Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, rows, cols );
-
-/**
- * Tiempo entre HEALTCHECK
- */
+* Tiempo entre HEALTCHECK
+**/
 const int healtCheckTime = 100; // In milliseconds.
 /**
- * Máximo tiempo de la puerta abierta
- */
+* Máximo tiempo de la puerta abierta
+**/
 const int maxOpenedTime = 30000; // En milis
 /**
- * Número de intentos antes de alerta.
- */
+* Número de intentos antes de alerta.
+**/
 const int INTENTOS = 3;
+//---------------------------------------------------------------
+// Variables del programa
+//---------------------------------------------------------------
 /**
- * Contraseñas
- */
+* Pines de las columnas
+**/
+byte colPins[cols] = {5, 4, 3, 2}; //connect to the row pinouts of the keypad
+/**
+* Pines de las filas
+**/
+byte rowPins[rows] = {9, 8, 7, 6}; //connect to the column pinouts of the keypad
+/**
+* Keypad
+**/
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, rows, cols );
+/**
+* Contraseñas
+**/
 char passwords[4][4] = {{'1', '2', '3', '4'}, {'1', '2', '3', '5'}, {'1', '2', '3', '6'}};
-
+/**
+* Contador del caracter actual
+**/
 int i = 0;
+/**
+* Contraseña que se está digitando
+**/
 char password[4] = {'\0', '\0', '\0', '\0'};
-
-int mSHC;
-int mSOT;
+/**
+* Milisegundo desde la último HEALTCHECK 
+**/
+unsigned long mSHC;
+/**
+* Milisegundo desde que se abrió la puerta
+**/
+unsigned long mSOT;
+/**
+* Indicador de si la puerta está abierta
+**/
 boolean isOpen = false;
+/**
+* Indicador de si la puerta quedo abierta por más tiempo que el permitido
+**/
+boolean block = false;
+/**
+* Número de intentos de contraseña 
+*/
 int tries = 0;
 
-boolean bloqueo = false;
-int id = 555;
-String mensaje = "";
-String temp = "";
-
+//---------------------------------------------------------------
+// Setup del programa
+//---------------------------------------------------------------
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("HEALTCHECK");
   mSHC = millis();
   mSOT = millis();
   pinMode(R, OUTPUT);
@@ -110,109 +131,109 @@ void setup() {
   analogWrite(B, 0);
 }
 
+//---------------------------------------------------------------
+// Loop del programa
+//---------------------------------------------------------------
+
 void loop() {
   // Envía el HEALTCHECK
   if (millis() > mSHC + healtCheckTime) {
-    //Serial.println("HEALTCHECK");
+    //Serial.print(mensaje(-1));
     mSHC = millis();
   }
-
   // Envía alerta de puerta abierta
   if (isOpen && millis() > maxOpenedTime + mSOT) {
-    bloqueo = true;
+    Serial.println(mensaje(0));
     analogWrite(R, 0);
     analogWrite(G, 255);
     analogWrite(B, 255);
-    temp = "ALERTA::0::";
-    mensaje = temp + id;
-    Serial.println(mensaje);
+    block = true;
   } else if (!isOpen) {
     mSOT = millis();
   }
-  
+
+  // Enciende el LED RGB si está abierto
+  if (isOpen && !block) {
+    analogWrite(R, 255);
+    analogWrite(G, 0);
+    analogWrite(B, 255);
+  } else if (!block) {
+    analogWrite(R, 255);
+    analogWrite(G, 255);
+    analogWrite(B, 0);
+  }
   // Enciende el led si hay presencia. 
   if (digitalRead(ir) && isOpen) {
-    temp = "ALERTA::2::";
-    mensaje = temp + id;
-    Serial.println(mensaje);
+    Serial.println(mensaje(2));
     digitalWrite(led, HIGH);
   }
 
-  if(!bloqueo)isOpen = false;
-  char key = keypad.getKey();
-  if(digitalRead(boton) == 1){
+  if (digitalRead(boton) == HIGH && !isOpen) {
+    block = false;
     isOpen = true;
-  }
-  else{
-  if (key != NO_KEY) {
-    // Cerrar la puerta
-    if (key == 'C') {
-      isOpen = false;
-      bloqueo = false;
-      tries = 0;
-    }else if (key == '#') {
-      if(i>0)i--;
-    }else if (!isOpen) {
+    tries = 0;
+    i = 0;
+  } else if (digitalRead(boton) == LOW && isOpen && password[0] != '-') {
+    isOpen = false;
+    block = false;
+    tries = 0;
+    i = 0;
+    mSOT = millis();
+  } else {
+    char key = keypad.getKey();
+    if (key != NO_KEY) {
+      // Cerrar la puerta
+      if (key == '*' && isOpen) {
+        isOpen = false;
+        tries = 0;
+        block = false;
+        i = 0;
+        password[0] = '\0';
+        password[1] = '\0';
+        password[2] = '\0';
+        password[3] = '\0';
+      } else if (!isOpen) {
+        if (key == '#') {
+          i = 0;
+        }
         password[i++] = key;
         if (i == 4) {
-          //Serial.println("Prueba");
-        if (existsPassword()) {
-          //Serial.println("Bien");
-          i = 0;
-          isOpen = true;
-          mSOT = millis();
-          analogWrite(R, 255);
-          analogWrite(G, 0);
-          analogWrite(B, 255);
-          bloqueo = true;
-        } else {
-          //Serial.println("Mal");
-          if (++tries >= INTENTOS) {
-            temp = "ALERTA::0::";
-            mensaje = temp + id;
-            Serial.println(mensaje);
-            analogWrite(R, 0);
-            analogWrite(G, 255);
-            analogWrite(B, 255);
-            bloqueo = true;
-          }else{
-           analogWrite(R, 0);
-           analogWrite(G, 255);
-           analogWrite(B, 255);
-           delay(1000); 
-           analogWrite(R, 255);
-           analogWrite(G, 255);
-           analogWrite(B, 0);
-           
+          if (existsPassword()) {
+            block = false;
+            isOpen = true;
+            password[0] = '-';
+            tries = 0;
+            mSOT = millis();
+          } else {
+            if (++tries >= INTENTOS) {
+              Serial.println(mensaje(1));
+              analogWrite(R, 0);
+              analogWrite(G, 255);
+              analogWrite(B, 255);
+              delay(30000);
+              tries = 0;
+            } else {
+              analogWrite(R, 0);
+              analogWrite(G, 255);
+              analogWrite(B, 255);
+              delay(1000);
+            }
           }
           i = 0;
-         }
+        }
       }
     }
-    }
-  }
-
-    // Enciende el LED RGB si está abierto
-  if(!bloqueo){
-    if (isOpen) {
-      analogWrite(R, 255);
-      analogWrite(G, 0);
-      analogWrite(B, 255);
-    }
-    else{
-      analogWrite(R, 255);
-      analogWrite(G, 255);
-      analogWrite(B, 0);
-    }
-  }
-  else{
-    //Serial.println("BLOQUEADO");
   }
 }
 
+
+//---------------------------------------------------------------
+// Método auxiliares del programa
+//---------------------------------------------------------------
+
 /**
 * Indica si existe una contraseña
-*/
+**/
 boolean existsPassword() {
   boolean existsPassword = false;
   for (int k = 0; k < 4 && !existsPassword; k++) {
@@ -225,4 +246,15 @@ boolean existsPassword() {
     }
   }
   return existsPassword;
+}
+
+/**
+* Prepara una trama de datos 
+**/
+String mensaje(int tipo){
+  String temp = "ALERTA::";
+  String temp2 = temp + tipo;
+  temp = temp2 + "::";
+  temp2 = temp + id;
+  return temp2;
 }
