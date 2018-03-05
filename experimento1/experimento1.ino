@@ -214,6 +214,9 @@ boolean existsPassword() {
   return existsPassword;
 }
 
+/**
+* Prepara una trama de datos 
+**/
 String mensaje(int tipo){
   String temp = "ALERTA::";
   String temp2 = temp + tipo;
