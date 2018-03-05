@@ -12,7 +12,7 @@ consumer.subscribe(pattern='propietario.apto1.alerta')
 # To consume latest messages and auto-commit offsets
 consumer = KafkaConsumer('seguridad.apto1.alerta',
                          group_id='my-group',
-                         bootstrap_servers=['localhost:8090'])
+                         bootstrap_servers=['192.168.0.3:8083'])
 for message in consumer:
 	leer=message.value
 	tipo=leer["alert"]["type"]
@@ -21,7 +21,7 @@ for message in consumer:
     print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                           message.offset, message.key,
                                           message.value))
-producer = KafkaProducer(bootstrap_servers=['broker1:8090'])
+producer = KafkaProducer(bootstrap_servers=['broker1:8083'])
 
 # Asynchronous by default
 if tipo is "0" and leer is not "0"
