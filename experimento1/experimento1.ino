@@ -5,18 +5,18 @@
 //---------------------------------------------------------------
 
 /**
-* Número de filas del teclado
-**/
+ * Número de filas del teclado
+ */
 const byte rows = 4;
 
 /**
-* Número de columnas del teclado
-**/
+ * Número de columnas del teclado
+ */
 const byte cols = 4;
 
 /**
-* Matriz de caracteres del teclado
-**/
+ * Matriz de caracteres del teclado
+ */
 char keys[rows][cols] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
@@ -25,96 +25,70 @@ char keys[rows][cols] = {
 };
 
 /**
-* Pin rojo del LED RGB
-**/
+ * Pin rojo del LED RGB
+ */
 const int R = 13;
 /**
-* Pin verde del LED RGB
-**/
+ * Pin verde del LED RGB
+ */
 const int G = 12;
-/*
-* Pin azul del LED RGB
-**/
+/**
+ * Pin azul del LED RGB
+ */
 const int B = 11;
 /**
-* Pin LED del Infrarojo
-**/
+ * Pin LED del Infrarojo
+ */
 const int led = 0;
 /**
-* Pin del infarojo
-**/
+ * Pin del infarojo
+ */
 const int ir = 1;
 /**
-* Pin del pulsador
-**/
+ * Pin del pulsador
+ */
 const int boton = 10;
 /**
-* ID de la cerradura
-**/
-const int id = 555;
-/**
-* Tiempo entre HEALTCHECK
-**/
-const int healtCheckTime = 100; // In milliseconds.
-/**
-* Máximo tiempo de la puerta abierta
-**/
-const int maxOpenedTime = 30000; // En milis
-/**
-* Número de intentos antes de alerta.
-**/
-const int INTENTOS = 3;
-//---------------------------------------------------------------
-// Variables del programa
-//---------------------------------------------------------------
-/**
-* Pines de las columnas
-**/
+ * Pines de las columnas
+ */
 byte colPins[cols] = {5, 4, 3, 2}; //connect to the row pinouts of the keypad
 /**
-* Pines de las filas
-**/
+ * Pines de las filas
+ */
 byte rowPins[rows] = {9, 8, 7, 6}; //connect to the column pinouts of the keypad
 /**
-* Keypad
-**/
+ * Keypad
+ */
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, rows, cols );
-/**
-* Contraseñas
-**/
-char passwords[4][4] = {{'1', '2', '3', '4'}, {'1', '2', '3', '5'}, {'1', '2', '3', '6'}};
-/**
-* Contador del caracter actual
-**/
-int i = 0;
-/**
-* Contraseña que se está digitando
-**/
-char password[4] = {'\0', '\0', '\0', '\0'};
-/**
-* Milisegundo desde la último HEALTCHECK 
-**/
-unsigned long mSHC;
-/**
-* Milisegundo desde que se abrió la puerta
-**/
-unsigned long mSOT;
-/**
-* Indicador de si la puerta está abierta
-**/
-boolean isOpen = false;
-/**
-* Indicador de si la puerta quedo abierta por más tiempo que el permitido
-**/
-boolean block = false;
-/**
-* Número de intentos de contraseña 
-*/
-int tries = 0;
 
-//---------------------------------------------------------------
-// Setup del programa
-//---------------------------------------------------------------
+/**
+ * Tiempo entre HEALTCHECK
+ */
+const int healtCheckTime = 100; // In milliseconds.
+/**
+ * Máximo tiempo de la puerta abierta
+ */
+const int maxOpenedTime = 5000; // En milis
+/**
+ * Número de intentos antes de alerta.
+ */
+const int INTENTOS = 3;
+/**
+ * Contraseñas
+ */
+char passwords[4][4] = {{'1', '2', '3', '4'}, {'1', '2', '3', '5'}, {'1', '2', '3', '6'}};
+
+int i = 0;
+char password[4] = {'\0', '\0', '\0', '\0'};
+
+unsigned long mSHC;
+unsigned long mSOT;
+boolean isOpen = false;
+boolean block = false;
+int id = 555;
+
+
+int tries = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -130,10 +104,6 @@ void setup() {
   analogWrite(G, 255);
   analogWrite(B, 0);
 }
-
-//---------------------------------------------------------------
-// Loop del programa
-//---------------------------------------------------------------
 
 void loop() {
   // Envía el HEALTCHECK
@@ -166,6 +136,8 @@ void loop() {
   if (digitalRead(ir) && isOpen) {
     Serial.println(mensaje(2));
     digitalWrite(led, HIGH);
+  }else{
+        digitalWrite(led, LOW);
   }
 
   if (digitalRead(boton) == HIGH && !isOpen) {
@@ -192,10 +164,9 @@ void loop() {
         password[1] = '\0';
         password[2] = '\0';
         password[3] = '\0';
-      } else if (!isOpen) {
-        if (key == '#') {
-          i = 0;
-        }
+      } else if (key == '#') {
+        i = 0;
+      }else if (!isOpen) {
         password[i++] = key;
         if (i == 4) {
           if (existsPassword()) {
@@ -226,14 +197,9 @@ void loop() {
   }
 }
 
-
-//---------------------------------------------------------------
-// Método auxiliares del programa
-//---------------------------------------------------------------
-
 /**
 * Indica si existe una contraseña
-**/
+*/
 boolean existsPassword() {
   boolean existsPassword = false;
   for (int k = 0; k < 4 && !existsPassword; k++) {
@@ -248,9 +214,6 @@ boolean existsPassword() {
   return existsPassword;
 }
 
-/**
-* Prepara una trama de datos 
-**/
 String mensaje(int tipo){
   String temp = "ALERTA::";
   String temp2 = temp + tipo;
