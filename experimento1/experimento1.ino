@@ -37,17 +37,29 @@ const int G = 12;
  */
 const int B = 11;
 /**
+ * Pin buzzer
+ */
+const int buzzer = 26;
+/**
  * Pin LED del Infrarojo
  */
-const int led = 0;
+const int led = 25;
+/**
+ * Pin LED del Infrarojo
+ */
+const int ledBateria = 22;
 /**
  * Pin del infarojo
  */
-const int ir = 1;
+const int ir = 23;
 /**
  * Pin del pulsador
  */
-const int boton = 10;
+const int boton = 24;
+/**
+ * Pin batería
+ */
+const int bateria = 0;
 /**
  * Pines de las columnas
  */
@@ -70,6 +82,10 @@ const int healtCheckTime = 100; // In milliseconds.
  */
 const int maxOpenedTime = 5000; // En milis
 /**
+ * Máximo tiempo de espera entre sonido de batería baja
+ */
+const int maxLowBattery = 5000; // En milis
+/**
  * Número de intentos antes de alerta.
  */
 const int INTENTOS = 3;
@@ -77,14 +93,19 @@ const int INTENTOS = 3;
  * Contraseñas
  */
 char passwords[4][4] = {{'1', '2', '3', '4'}, {'1', '2', '3', '5'}, {'1', '2', '3', '6'}};
-
+/**
+ * Valor mínimo de batería
+ */
+const float minBateria = 1.2;
 int i = 0;
 char password[4] = {'\0', '\0', '\0', '\0'};
 
 unsigned long mSHC;
 unsigned long mSOT;
+unsigned long mSLB;
 boolean isOpen = false;
 boolean block = false;
+boolean lowBattery = false;
 int id = 555;
 
 
@@ -94,10 +115,13 @@ void setup() {
   Serial.begin(9600);
   mSHC = millis();
   mSOT = millis();
+  mSLB = millis();
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
   pinMode(led, OUTPUT);
+  pinMode(ledBateria, OUTPUT);
+  pinMode(buzzer, OUTPUT);
   pinMode(boton, INPUT);
   pinMode(ir, INPUT);
   analogWrite(R, 255);
@@ -111,6 +135,25 @@ void loop() {
     //Serial.print(mensaje(-1));
     mSHC = millis();
   }
+  
+  float voltajeBateria = 0.0048*analogRead(bateria);
+  if (voltajeBateria <= minBateria) {
+    if (!lowBattery)
+      mSLB = -maxLowBattery;
+    lowBattery = true;
+    digitalWrite(ledBateria, HIGH);
+  } else {
+    digitalWrite(ledBateria, LOW);
+    lowBattery = false;
+    noTone(buzzer);
+  }
+  
+  if (lowBattery && millis() > mSLB + maxLowBattery) {
+    Serial.println(mensaje(3));
+    tone(buzzer, 370, 2000);
+    mSLB = millis();
+  }
+  
   // Envía alerta de puerta abierta
   if (isOpen && millis() > maxOpenedTime + mSOT) {
     Serial.println(mensaje(0));
@@ -118,6 +161,7 @@ void loop() {
     analogWrite(G, 255);
     analogWrite(B, 255);
     block = true;
+    digitalWrite(buzzer, HIGH);
   } else if (!isOpen) {
     mSOT = millis();
   }
@@ -127,10 +171,12 @@ void loop() {
     analogWrite(R, 255);
     analogWrite(G, 0);
     analogWrite(B, 255);
+    digitalWrite(buzzer, LOW);
   } else if (!block) {
     analogWrite(R, 255);
     analogWrite(G, 255);
     analogWrite(B, 0);
+    digitalWrite(buzzer, LOW);
   }
   // Enciende el led si hay presencia. 
   if (digitalRead(ir) && isOpen) {
@@ -176,6 +222,7 @@ void loop() {
             tries = 0;
             mSOT = millis();
           } else {
+            digitalWrite(buzzer, HIGH);
             if (++tries >= INTENTOS) {
               Serial.println(mensaje(1));
               analogWrite(R, 0);
