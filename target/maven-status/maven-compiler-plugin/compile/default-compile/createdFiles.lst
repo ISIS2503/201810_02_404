@@ -1,0 +1,16 @@
+model\dto\converter\AlertaConverter.class
+model\dto\model\AlertaDTO.class
+service\AlertaService.class
+main\SimpleMqttClient.class
+logic\AlertaLogic.class
+persistence\Persistencer.class
+main\SimpleMqttClient$4.class
+interfaces\IAlertaLogic.class
+main\SimpleMqttClient$3.class
+persistence\AlertaPersistence.class
+interfaces\IAlertaConverter.class
+speed\Speed.class
+main\SimpleMqttClient$2.class
+persistence\JPAConnection.class
+model\entity\AlertaEntity.class
+main\SimpleMqttClient$1.class
