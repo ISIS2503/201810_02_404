@@ -41,7 +41,9 @@ public class InmuebleConverter implements IInmuebleConverter {
     public InmuebleDTO entityToDto(InmuebleEntity entity) {
         InmuebleDTO dto = new InmuebleDTO();
         dto.setId(entity.getId());
-        dto.setAlarmas(entity.getAlarmas());
+        dto.setConjunto(ConjuntoConverter.CONVERTER.entityToDto(entity.getConjunto()));
+        if (entity.getAlarmas() != null)
+            dto.setAlarmas(AlertaConverter.CONVERTER.listEntitiesToListDTOs(entity.getAlarmas()));
         return dto;
     }
 
@@ -49,7 +51,9 @@ public class InmuebleConverter implements IInmuebleConverter {
     public InmuebleEntity dtoToEntity(InmuebleDTO dto) {
         InmuebleEntity entity = new InmuebleEntity();
         entity.setId(dto.getId());
-        entity.setAlarmas(dto.getAlarmas());
+        entity.setConjunto(ConjuntoConverter.CONVERTER.dtoToEntity(dto.getConjunto()));
+        if (dto.getAlarmas() != null)
+            entity.setAlarmas(AlertaConverter.CONVERTER.listDTOsToListEntities(dto.getAlarmas()));
         return entity;
     }
 

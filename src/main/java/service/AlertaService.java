@@ -46,5 +46,4 @@ public class AlertaService {
     public List<AlertaDTO> all() {
         return alertaLogic.all();
     }
-
 }

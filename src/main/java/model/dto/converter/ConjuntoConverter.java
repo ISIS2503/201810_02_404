@@ -27,7 +27,10 @@ import interfaces.IConjuntoConverter;
 import model.dto.model.ConjuntoDTO;
 import model.entity.ConjuntoEntity;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import model.dto.model.InmuebleDTO;
+import model.entity.InmuebleEntity;
 
 /**
  *
@@ -45,7 +48,8 @@ public class ConjuntoConverter implements IConjuntoConverter {
         ConjuntoDTO dto = new ConjuntoDTO();
         dto.setId(entity.getId());
         dto.setNombre(entity.getNombre());
-        dto.setInmuebles(entity.getInmuebles());
+        if (entity.getInmuebles() != null)
+            dto.setInmuebles(InmuebleConverter.CONVERTER.listEntitiesToListDTOs(entity.getInmuebles()));
         return dto;
     }
 
@@ -54,7 +58,8 @@ public class ConjuntoConverter implements IConjuntoConverter {
         ConjuntoEntity entity = new ConjuntoEntity();
         entity.setId(dto.getId());
         entity.setNombre(dto.getNombre());
-        entity.setInmuebles(dto.getInmuebles());
+        if (dto.getInmuebles() != null)
+            entity.setInmuebles(InmuebleConverter.CONVERTER.listDTOsToListEntities(dto.getInmuebles()));
         return entity;
     }
 

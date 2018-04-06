@@ -23,7 +23,7 @@
  */
 package model.dto.model;
 
-import java.util.Date;
+
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -32,14 +32,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class InmuebleDTO {
 
     private String id;
-    private List<String> alarmas;
+    private List<AlertaDTO> alarmas;
+    private ConjuntoDTO conjunto;
 
     public InmuebleDTO() {
     }
 
-    public InmuebleDTO(String id, List<String> alarmas) {
+    public InmuebleDTO(String id, List<AlertaDTO> alarmas, ConjuntoDTO conjunto) {
         this.id = id;
         this.alarmas = alarmas;
+        this.conjunto = conjunto;
     }
 
     public String getId() {
@@ -50,13 +52,19 @@ public class InmuebleDTO {
         this.id = id;
     }
 
-    public List<String> getAlarmas() {
+    public List<AlertaDTO> getAlarmas() {
         return alarmas;
     }
 
-    public void setAlarmas(List<String> alarmas) {
+    public void setAlarmas(List<AlertaDTO> alarmas) {
         this.alarmas = alarmas;
     }
 
-    
+    public ConjuntoDTO getConjunto() {
+        return conjunto;
+    }
+
+    public void setConjunto(ConjuntoDTO conjunto) {
+        this.conjunto = conjunto;
+    }
 }

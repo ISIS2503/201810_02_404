@@ -43,38 +43,38 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ConjuntoService {
 
-    private final IConjuntoLogic floorLogic;
+    private final IConjuntoLogic conjuntoLogic;
 
     public ConjuntoService() {
-        this.floorLogic = new ConjuntoLogic();
+        this.conjuntoLogic = new ConjuntoLogic();
     }
 
     @POST
     public ConjuntoDTO add(ConjuntoDTO dto) {
-        return floorLogic.add(dto);
+        return conjuntoLogic.add(dto);
     }
 
     @PUT
     public ConjuntoDTO update(ConjuntoDTO dto) {
-        return floorLogic.update(dto);
+        return conjuntoLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
     public ConjuntoDTO find(@PathParam("id") String id) {
-        return floorLogic.find(id);
+        return conjuntoLogic.find(id);
     }
 
     @GET
     public List<ConjuntoDTO> all() {
-        return floorLogic.all();
+        return conjuntoLogic.all();
     }
 
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") String id) {
         try {
-            floorLogic.delete(id);
+            conjuntoLogic.delete(id);
             return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Conjunto was deleted").build();
         } catch (Exception e) {
             Logger.getLogger(ConjuntoService.class).log(Level.WARNING, e.getMessage());

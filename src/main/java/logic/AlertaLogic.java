@@ -23,18 +23,25 @@
  */
 package logic;
 import interfaces.IAlertaLogic;
+import java.util.LinkedList;
 import static model.dto.converter.AlertaConverter.CONVERTER;
 import model.dto.model.AlertaDTO;
 import persistence.AlertaPersistence;
 import java.util.List;
 import java.util.UUID;
+import model.dto.converter.InmuebleConverter;
+import model.dto.model.InmuebleDTO;
+import model.entity.InmuebleEntity;
 
 public class AlertaLogic implements IAlertaLogic {
 
+    
     private final AlertaPersistence persistence;
+    private final InmuebleLogic inmuebleLogic;
 
     public AlertaLogic() {
         this.persistence = new AlertaPersistence();
+        this.inmuebleLogic = new InmuebleLogic();
     }
 
     @Override
@@ -43,6 +50,16 @@ public class AlertaLogic implements IAlertaLogic {
             dto.setId(UUID.randomUUID().toString());
         }
         AlertaDTO result = CONVERTER.entityToDto(persistence.add(CONVERTER.dtoToEntity(dto)));
+        InmuebleDTO inmueble = dto.getInmueble();
+        if (inmueble.getAlarmas() == null) {
+            List<AlertaDTO> alertas = new LinkedList<AlertaDTO>();
+            alertas.add(result);
+            inmueble.setAlarmas(alertas);
+            inmuebleLogic.update(inmueble);
+        } else {
+            inmueble.getAlarmas().add(result);
+            inmuebleLogic.update(inmueble);
+        }
         return result;
     }
 
@@ -53,8 +70,8 @@ public class AlertaLogic implements IAlertaLogic {
     }
     
     @Override
-    public List<AlertaDTO> findByRoomId(String id) {
-        return CONVERTER.listEntitiesToListDTOs(persistence.findByRoomId(id));
+    public List<AlertaDTO> findByInmuebleId(String id) {
+        return CONVERTER.listEntitiesToListDTOs(persistence.findByInmuebleId(id));
     }
 
     @Override

@@ -23,18 +23,25 @@
  */
 package logic;
 import interfaces.IInmuebleLogic;
+import java.util.LinkedList;
 import static model.dto.converter.InmuebleConverter.CONVERTER;
 import model.dto.model.InmuebleDTO;
 import persistence.InmueblePersistence;
 import java.util.List;
 import java.util.UUID;
+import model.dto.converter.AlertaConverter;
+import model.dto.model.AlertaDTO;
+import model.entity.AlertaEntity;
+import model.entity.InmuebleEntity;
 
 public class InmuebleLogic implements IInmuebleLogic {
 
     private final InmueblePersistence persistence;
+    private final AlertaLogic alertaLogic;
 
     public InmuebleLogic() {
         this.persistence = new InmueblePersistence();
+        this.alertaLogic = new AlertaLogic();
     }
 
     @Override
@@ -42,8 +49,20 @@ public class InmuebleLogic implements IInmuebleLogic {
         if (dto.getId() == null) {
             dto.setId(UUID.randomUUID().toString());
         }
-        InmuebleDTO result = CONVERTER.entityToDto(persistence.add(CONVERTER.dtoToEntity(dto)));
-        return result;
+        if (dto.getAlarmas() != null) {
+            List<AlertaDTO> alertasDTO = dto.getAlarmas();
+            dto.setAlarmas(null);
+            InmuebleEntity entity = persistence.add(CONVERTER.dtoToEntity(dto));
+            List<AlertaEntity> alertas = new LinkedList<>();
+            for (AlertaDTO alerta : alertasDTO) {
+                alertas.add(AlertaConverter.CONVERTER.dtoToEntity(alertaLogic.add(alerta))) ;
+            }
+            entity.setAlarmas(alertas);
+            InmuebleDTO result = update(CONVERTER.entityToDto(entity));
+            return result;
+        } else {
+            return CONVERTER.entityToDto(persistence.add(CONVERTER.dtoToEntity(dto)));
+        }
     }
 
     @Override

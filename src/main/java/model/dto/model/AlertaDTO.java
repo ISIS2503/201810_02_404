@@ -7,16 +7,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AlertaDTO {
 
     private String id;
+    private String deviceId;
     private Date time;
     private int type;
+    private InmuebleDTO inmueble;
 
     public AlertaDTO() {
     }
 
-    public AlertaDTO(String id, Date time, int type) {
+    public AlertaDTO(String id, String deviceId, Date time, int type, InmuebleDTO inmueble) {
         this.id = id;
+        this.deviceId = deviceId;
         this.time = time;
         this.type = type;
+        this.inmueble = inmueble;
     }
 
     public String getId() {
@@ -27,6 +31,14 @@ public class AlertaDTO {
         this.id = id;
     }
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+    
     public Date getTime() {
         return time;
     }
@@ -43,5 +55,11 @@ public class AlertaDTO {
         this.type = type;
     }
 
-    
+    public InmuebleDTO getInmueble() {
+        return inmueble;
+    }
+
+    public void setInmueble(InmuebleDTO inmueble) {
+        this.inmueble = inmueble;
+    }
 }

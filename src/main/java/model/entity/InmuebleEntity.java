@@ -24,30 +24,27 @@
 package model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "CONSOLIDATED_DATA")
+@Table(name = "INMUEBLE")
 public class InmuebleEntity implements Serializable {
 
     @Id
     private String id;
-    private List<String> alarmas;
-
+    private List<AlertaEntity> alarmas;
+    private ConjuntoEntity conjunto;
 
     public InmuebleEntity() {
     }
 
-    public InmuebleEntity(String id, List<String> alarmas) {
+    public InmuebleEntity(String id, List<AlertaEntity> alarmas, ConjuntoEntity conjunto) {
         this.id = id;
         this.alarmas = alarmas;
+        this.conjunto = conjunto;
     }
 
     public String getId() {
@@ -58,13 +55,19 @@ public class InmuebleEntity implements Serializable {
         this.id = id;
     }
 
-    public List<String> getAlarmas() {
+    public List<AlertaEntity> getAlarmas() {
         return alarmas;
     }
 
-    public void setAlarmas(List<String> alarmas) {
+    public void setAlarmas(List<AlertaEntity> alarmas) {
         this.alarmas = alarmas;
     }
 
-    
+    public ConjuntoEntity getConjunto() {
+        return conjunto;
+    }
+
+    public void setConjunto(ConjuntoEntity conjunto) {
+        this.conjunto = conjunto;
+    }
 }

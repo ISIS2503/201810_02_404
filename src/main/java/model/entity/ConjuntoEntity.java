@@ -24,28 +24,24 @@
 package model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "CONSOLIDATED_DATA")
+@Table(name = "CONJUNTO")
 public class ConjuntoEntity implements Serializable {
 
     @Id
     private String id;
     private String nombre;
-    private List<String> inmuebles;
+    private List<InmuebleEntity> inmuebles;
 
     public ConjuntoEntity() {
     }
 
-    public ConjuntoEntity(String id, String nombre, List<String> inmuebles) {
+    public ConjuntoEntity(String id, String nombre, List<InmuebleEntity> inmuebles) {
         this.id = id;
         this.nombre = nombre;
         this.inmuebles = inmuebles;
@@ -67,13 +63,11 @@ public class ConjuntoEntity implements Serializable {
         this.nombre = nombre;
     }
 
-    public List<String> getInmuebles() {
+    public List<InmuebleEntity> getInmuebles() {
         return inmuebles;
     }
 
-    public void setInmuebles(List<String> inmuebles) {
+    public void setInmuebles(List<InmuebleEntity> inmuebles) {
         this.inmuebles = inmuebles;
     }
-
-    
 }

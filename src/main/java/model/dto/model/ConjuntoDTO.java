@@ -23,7 +23,6 @@
  */
 package model.dto.model;
 
-import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -33,12 +32,12 @@ public class ConjuntoDTO {
 
     private String id;
     private String nombre;
-    private List<String> inmuebles;
+    private List<InmuebleDTO> inmuebles;
 
     public ConjuntoDTO() {
     }
 
-    public ConjuntoDTO(String id, String nombre, List<String> inmuebles) {
+    public ConjuntoDTO(String id, String nombre, List<InmuebleDTO> inmuebles) {
         this.id = id;
         this.nombre = nombre;
         this.inmuebles = inmuebles;
@@ -60,11 +59,11 @@ public class ConjuntoDTO {
         this.nombre = nombre;
     }
 
-    public List<String> getInmuebles() {
+    public List<InmuebleDTO> getInmuebles() {
         return inmuebles;
     }
 
-    public void setInmuebles(List<String> inmuebles) {
+    public void setInmuebles(List<InmuebleDTO> inmuebles) {
         this.inmuebles = inmuebles;
     }
 

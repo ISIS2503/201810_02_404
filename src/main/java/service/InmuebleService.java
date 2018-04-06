@@ -27,6 +27,7 @@ import interfaces.IInmuebleLogic;
 import logic.InmuebleLogic;
 import model.dto.model.InmuebleDTO;
 import com.sun.istack.logging.Logger;
+import interfaces.IConjuntoLogic;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.DELETE;
@@ -38,43 +39,50 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import logic.ConjuntoLogic;
 
-@Path("/inmuebles")
 @Produces(MediaType.APPLICATION_JSON)
 public class InmuebleService {
 
-    private final IInmuebleLogic floorLogic;
+    private final IInmuebleLogic inmuebleLogic;
+    private final IConjuntoLogic conjuntoLogic;
 
     public InmuebleService() {
-        this.floorLogic = new InmuebleLogic();
+        this.inmuebleLogic = new InmuebleLogic();
+        this.conjuntoLogic = new ConjuntoLogic();
     }
 
     @POST
-    public InmuebleDTO add(InmuebleDTO dto) {
-        return floorLogic.add(dto);
+    @Path("conjuntos/{idcojunto}/inmuebles/")
+    public InmuebleDTO add(@PathParam("idcojunto") String idConjunto, InmuebleDTO dto) {
+        dto.setConjunto(this.conjuntoLogic.find(idConjunto));
+        return inmuebleLogic.add(dto);
     }
 
     @PUT
-    public InmuebleDTO update(InmuebleDTO dto) {
-        return floorLogic.update(dto);
+    @Path("conjuntos/{idcojunto}/inmuebles/")
+    public InmuebleDTO update(@PathParam("idcojunto") String idConjunto, InmuebleDTO dto) {
+        dto.setConjunto(this.conjuntoLogic.find(idConjunto));
+        return inmuebleLogic.update(dto);
     }
 
     @GET
-    @Path("/{id}")
-    public InmuebleDTO find(@PathParam("id") String id) {
-        return floorLogic.find(id);
+    @Path("conjuntos/{idcojunto}/inmuebles/{id}")
+    public InmuebleDTO find(@PathParam("idcojunto") String idConjunto, @PathParam("id") String id) {
+        return inmuebleLogic.find(id);
     }
 
     @GET
-    public List<InmuebleDTO> all() {
-        return floorLogic.all();
+    @Path("conjuntos/{idcojunto}/inmuebles/")
+    public List<InmuebleDTO> all(@PathParam("idcojunto") String idConjunto) {
+        return inmuebleLogic.all();
     }
 
     @DELETE
-    @Path("/{id}")
-    public Response delete(@PathParam("id") String id) {
+    @Path("conjuntos/{idcojunto}/inmuebles/{id}")
+    public Response delete(@PathParam("idcojunto") String idConjunto, @PathParam("id") String id) {
         try {
-            floorLogic.delete(id);
+            inmuebleLogic.delete(id);
             return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Inmueble was deleted").build();
         } catch (Exception e) {
             Logger.getLogger(InmuebleService.class).log(Level.WARNING, e.getMessage());

@@ -23,18 +23,25 @@
  */
 package logic;
 import interfaces.IConjuntoLogic;
+import java.util.LinkedList;
 import static model.dto.converter.ConjuntoConverter.CONVERTER;
 import model.dto.model.ConjuntoDTO;
 import persistence.ConjuntoPersistence;
 import java.util.List;
 import java.util.UUID;
+import model.dto.converter.InmuebleConverter;
+import model.dto.model.InmuebleDTO;
+import model.entity.ConjuntoEntity;
+import model.entity.InmuebleEntity;
 
 public class ConjuntoLogic implements IConjuntoLogic {
 
     private final ConjuntoPersistence persistence;
+    private final InmuebleLogic inmuebleLogic;
 
     public ConjuntoLogic() {
         this.persistence = new ConjuntoPersistence();
+        this.inmuebleLogic = new InmuebleLogic();
     }
 
     @Override
@@ -42,8 +49,18 @@ public class ConjuntoLogic implements IConjuntoLogic {
         if (dto.getId() == null) {
             dto.setId(UUID.randomUUID().toString());
         }
-        ConjuntoDTO result = CONVERTER.entityToDto(persistence.add(CONVERTER.dtoToEntity(dto)));
-        return result;
+        if (dto.getInmuebles() != null) {
+            List<InmuebleDTO> inmueblesDTO = dto.getInmuebles();
+            dto.setInmuebles(null);
+            ConjuntoEntity entity = persistence.add(CONVERTER.dtoToEntity(dto));
+            List<InmuebleEntity> inmuebles = new LinkedList<>();
+            for (InmuebleDTO inmueble : inmueblesDTO) {
+                inmuebles.add(InmuebleConverter.CONVERTER.dtoToEntity(inmuebleLogic.add(inmueble)));
+            }
+            entity.setInmuebles(inmuebles);
+            return update(CONVERTER.entityToDto(entity));
+        }
+        return CONVERTER.entityToDto(persistence.add(CONVERTER.dtoToEntity(dto)));
     }
 
     @Override

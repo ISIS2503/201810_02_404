@@ -40,6 +40,10 @@ public class AlertaConverter implements IAlertaConverter {
     public AlertaDTO entityToDto(AlertaEntity entity) {
         AlertaDTO dto = new AlertaDTO();
         dto.setId(entity.getId());
+        dto.setDeviceId(entity.getDeviceId());
+        dto.setTime(entity.getTime());
+        dto.setType(entity.getType());
+        dto.setInmueble(InmuebleConverter.CONVERTER.entityToDto(entity.getInmueble()));
         return dto;
     }
 
@@ -47,6 +51,10 @@ public class AlertaConverter implements IAlertaConverter {
     public AlertaEntity dtoToEntity(AlertaDTO dto) {
         AlertaEntity entity = new AlertaEntity();
         entity.setId(dto.getId());
+        entity.setDeviceId(dto.getDeviceId());
+        entity.setTime(dto.getTime());
+        entity.setType(dto.getType());
+        entity.setInmueble(InmuebleConverter.CONVERTER.dtoToEntity(dto.getInmueble()));
         return entity;
     }
 

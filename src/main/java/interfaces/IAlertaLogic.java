@@ -30,7 +30,7 @@ public interface IAlertaLogic {
     public AlertaDTO add(AlertaDTO dto);
     public AlertaDTO update(AlertaDTO dto);
     public AlertaDTO find(String id);    
-    public List<AlertaDTO> findByRoomId(String id);
+    public List<AlertaDTO> findByInmuebleId(String id);
     public List<AlertaDTO> all();
     public Boolean delete(String id);
 }

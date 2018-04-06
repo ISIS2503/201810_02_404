@@ -14,19 +14,25 @@ public class AlertaEntity implements Serializable {
 
     @Id
     private String id;
+    
+    private String deviceId;
 
     @Temporal(TemporalType.DATE)
     private Date time;
     
     private int type;
+    
+    private InmuebleEntity inmueble;
 
     public AlertaEntity() {
     }
 
-    public AlertaEntity(String id, Date time, int type) {
+    public AlertaEntity(String id, String deviceId, Date time, int type, InmuebleEntity inmueble) {
         this.id = id;
+        this.deviceId = deviceId;
         this.time = time;
         this.type = type;
+        this.inmueble = inmueble;
     }
 
     public String getId() {
@@ -37,6 +43,14 @@ public class AlertaEntity implements Serializable {
         this.id = id;
     }
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+    
     public Date getTime() {
         return time;
     }
@@ -52,6 +66,12 @@ public class AlertaEntity implements Serializable {
     public void setType(int type) {
         this.type = type;
     }
-    
-    
+
+    public InmuebleEntity getInmueble() {
+        return inmueble;
+    }
+
+    public void setInmueble(InmuebleEntity inmueble) {
+        this.inmueble = inmueble;
+    }
 }

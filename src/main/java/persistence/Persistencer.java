@@ -103,34 +103,8 @@ public class Persistencer<T, PK> {
             return false;
         }
     }
-
-    public T findCode(String code) {
-        T entity;
-        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.code = :code1";
-        Query query = entityManager.createQuery(queryString).setParameter("code1", code);
-        try {
-            entity = (T) query.getSingleResult();
-        } catch (NoResultException | NonUniqueResultException e) {
-            entity = null;
-            LOG.log(Level.WARNING, e.getMessage());
-        }
-        return entity;
-    }
-
-    public List<T> findBySensorId(String id) {
-        List<T> entities;
-        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.idSensor = :id1";
-        Query query = entityManager.createQuery(queryString).setParameter("id1", id);
-        try {
-            entities = query.getResultList();
-        } catch (NoResultException | NonUniqueResultException e) {
-            entities = null;
-            LOG.log(Level.WARNING, e.getMessage());
-        }
-        return entities;
-    }
-
-    public List<T> findByRoomId(String id) {
+    
+    public List<T> findByInmuebleId(String id) {
         List<T> entities;
         String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.roomID = :id1";
         Query query = entityManager.createQuery(queryString).setParameter("id1", id);
