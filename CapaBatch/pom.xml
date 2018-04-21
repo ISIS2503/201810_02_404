@@ -71,6 +71,16 @@
             <version>7.6.0.v20120127</version>
         </dependency>
         <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>jwks-rsa</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.impetus.kundera.client</groupId>
             <artifactId>kundera-rdbms</artifactId>
             <version>3.5</version>

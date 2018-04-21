@@ -23,6 +23,9 @@
  */
 package service;
 
+import auth.AuthorizationFilter;
+import auth.AuthorizationFilter.Role;
+import auth.Secured;
 import interfaces.IAlertaLogic;
 import logic.AlertaLogic;
 import model.dto.model.AlertaDTO;
@@ -33,6 +36,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/alertas")
+@Secured({Role.admin,Role.client})
 @Produces(MediaType.APPLICATION_JSON)
 public class AlertaService {
 

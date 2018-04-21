@@ -23,6 +23,8 @@
  */
 package service;
 
+import auth.AuthorizationFilter.Role;
+import auth.Secured;
 import interfaces.IConjuntoLogic;
 import logic.ConjuntoLogic;
 import model.dto.model.ConjuntoDTO;
@@ -50,28 +52,33 @@ public class ConjuntoService {
     }
 
     @POST
+    @Secured({Role.admin})
     public ConjuntoDTO add(ConjuntoDTO dto) {
         return conjuntoLogic.add(dto);
     }
 
     @PUT
+    @Secured({Role.admin})
     public ConjuntoDTO update(ConjuntoDTO dto) {
         return conjuntoLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
+    @Secured({Role.admin,Role.seguridad})
     public ConjuntoDTO find(@PathParam("id") String id) {
         return conjuntoLogic.find(id);
     }
 
     @GET
+    @Secured({Role.admin,Role.seguridad})
     public List<ConjuntoDTO> all() {
         return conjuntoLogic.all();
     }
 
     @DELETE
     @Path("/{id}")
+    @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         try {
             conjuntoLogic.delete(id);

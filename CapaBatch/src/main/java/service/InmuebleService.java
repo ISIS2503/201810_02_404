@@ -23,6 +23,7 @@
  */
 package service;
 
+import auth.AuthorizationFilter.Role;
 import interfaces.IInmuebleLogic;
 import logic.InmuebleLogic;
 import model.dto.model.InmuebleDTO;
@@ -40,6 +41,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import logic.ConjuntoLogic;
+import auth.Secured;
 
 @Path("/inmuebles")
 @Produces(MediaType.APPLICATION_JSON)
@@ -52,28 +54,33 @@ public class InmuebleService {
     }
 
     @POST
+    @Secured({Role.admin})
     public InmuebleDTO add(InmuebleDTO dto) {
         return inmuebleLogic.add(dto);
     }
 
     @PUT
+    @Secured({Role.admin})
     public InmuebleDTO update(InmuebleDTO dto) {
         return inmuebleLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
+    @Secured({Role.admin,Role.seguridad})
     public InmuebleDTO find(@PathParam("id") String id) {
         return inmuebleLogic.find(id);
     }
 
     @GET
+    @Secured({Role.admin,Role.seguridad})
     public List<InmuebleDTO> all() {
         return inmuebleLogic.all();
     }
 
     @DELETE
     @Path("/{id}")
+    @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         try {
             inmuebleLogic.delete(id);

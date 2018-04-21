@@ -21,31 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package co.edu.uniandes.isis2503.nosqljpa.service;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import model.dto.model.PassDTO;
+package logic;
 
 /**
  *
- * @author jd.correa
+ * @author af.bejarano
  */
-@Path("/pass")
-@Consumes(MediaType.APPLICATION_JSON)
-public class PasswordService {
-    public PasswordService(){
+public class ClavesLogic {
+
+    public void delete(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    @POST
-    @Path("/agregar")
-    public String agregarPass(PassDTO pass){
-        return pass.nuevaPass;
+
+    public void deleteAll() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    @POST
-    @Path("/cambiar")
-    public String cambiarPass(PassDTO pass){
-        return pass.toString();
-    }
+    
 }
