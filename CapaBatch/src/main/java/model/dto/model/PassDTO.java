@@ -31,8 +31,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class PassDTO {
-    public String viejaPass;
-    public String nuevaPass;
+    
+    private String viejaPass;
+    private int index;
+    private String nuevaPass;
+    
     public PassDTO(){
     }
 
@@ -51,6 +54,15 @@ public class PassDTO {
     public void setNuevaPass(String nuevaPass) {
         this.nuevaPass = nuevaPass;
     }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+        
     @Override
     public String toString(){
         return viejaPass+","+nuevaPass;
