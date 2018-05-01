@@ -17,9 +17,15 @@ public class SimpleMqttClient implements MqttCallback {
 	MqttConnectOptions connOpt;
 
 	static final String BROKER_URL = "tcp://localhost:8083";
+	int x = 500;
+	int z = 500;
 
 	static final Boolean subscriber = true;
 	static final Boolean publisher = false;
+	public void setX(int y) {
+		x=y;
+		z=y;
+	}
 
 	/**
 	 * 
@@ -29,6 +35,12 @@ public class SimpleMqttClient implements MqttCallback {
 	 */
 	@Override
 	public void connectionLost(Throwable t) {
+		try {
+			new Speed("HUB Fuera de Línea");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Connection lost!");
 	}
 
@@ -125,11 +137,32 @@ public class SimpleMqttClient implements MqttCallback {
 		System.out.println("| Message: " + payload);
 		System.out.println("-------------------------------------------------");
 		// Recibe el mensaje y lo envÃ­a al mock de manera asincrona
+		if(!payload.contains("HealthCheck")) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				setX(z);
 				try {
 					new Speed(payload);
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		}
+		else if (payload.contains("=")) {
+			String [] s=payload.split("=");
+			setX(Integer.parseInt(s[1]));
+			System.out.println("HealthChecks parametrizados"+x);
+		}
+		else x--;
+		if(x==0) new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					new Speed("Cerradura fuera de línea");
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
