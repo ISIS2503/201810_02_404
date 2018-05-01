@@ -1,5 +1,9 @@
 package com.isi2503.speed;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.client.ClientProtocolException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -35,12 +39,22 @@ public class SimpleMqttClient implements MqttCallback {
 	 */
 	@Override
 	public void connectionLost(Throwable t) {
-		try {
-			new Speed("HUB Fuera de Línea");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        time.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String times = time.format(new Date());
+		String envio = "{\"id\":\""+555+"\", \"type\": 5"+", \"time\":\""+times+"\"}";
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					new Speed(envio);
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		System.out.println("Connection lost!");
 	}
 
@@ -132,6 +146,12 @@ public class SimpleMqttClient implements MqttCallback {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		String payload = new String(message.getPayload());
+		String[] s = payload.split("::");
+		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        time.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String times = time.format(new Date());
+		String envio = "{\"id\":\""+s[2]+"\", \"type\":"+s[1]+", \"time\":\""+times+"\"}";
+		String envio2 = "{\"id\":\""+s[2]+"\", \"type\": 4" +", \"time\":\""+times+"\"}";
 		System.out.println("-------------------------------------------------");
 		System.out.println("| Topic: " + topic);
 		System.out.println("| Message: " + payload);
@@ -143,7 +163,7 @@ public class SimpleMqttClient implements MqttCallback {
 			public void run() {
 				setX(z);
 				try {
-					new Speed(payload);
+					new Speed(envio);
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -153,8 +173,8 @@ public class SimpleMqttClient implements MqttCallback {
 		}).start();
 		}
 		else if (payload.contains("=")) {
-			String [] s=payload.split("=");
-			setX(Integer.parseInt(s[1]));
+			String [] q=payload.split("=");
+			setX(Integer.parseInt(q[1]));
 			System.out.println("HealthChecks parametrizados"+x);
 		}
 		else x--;
@@ -162,7 +182,7 @@ public class SimpleMqttClient implements MqttCallback {
 			@Override
 			public void run() {
 				try {
-					new Speed("Cerradura fuera de línea");
+					new Speed(envio2);
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
