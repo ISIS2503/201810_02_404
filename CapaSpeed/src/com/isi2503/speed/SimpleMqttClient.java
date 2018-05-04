@@ -23,6 +23,7 @@ public class SimpleMqttClient implements MqttCallback {
 	static final String BROKER_URL = "tcp://localhost:8083";
 	int x = 500;
 	int z = 500;
+	boolean silenciar = false;
 
 	static final Boolean subscriber = true;
 	static final Boolean publisher = false;
@@ -157,7 +158,7 @@ public class SimpleMqttClient implements MqttCallback {
 		System.out.println("| Message: " + payload);
 		System.out.println("-------------------------------------------------");
 		// Recibe el mensaje y lo envía al mock de manera asincrona
-		if(!payload.contains("HealthCheck")) {
+		if(!payload.contains("HealthCheck") && !silenciar) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -177,8 +178,9 @@ public class SimpleMqttClient implements MqttCallback {
 			setX(Integer.parseInt(q[1]));
 			System.out.println("HealthChecks parametrizados"+x);
 		}
+		else if (payload.contains("silenciar")) silenciar=!silenciar;
 		else x--;
-		if(x==0) new Thread(new Runnable() {
+		if(x==0 && !silenciar) new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
