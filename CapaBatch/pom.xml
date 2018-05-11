@@ -2,24 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>co.edu.uniandes.isis2503.nosqljpa</groupId>
+    <groupId>co.edu.uniandes.isis2503.404</groupId>
     <artifactId>JPANoSQLThermalComfortApp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>JPANoSQLThermalComfortApp</name>
+    <name>Aplicación Yale - BATCH</name>
     <organization>
         <name>Universidad De Los Andes - Departamento de Ingeniería de Sistemas</name>
         <url>sistemas.uniandes.edu.co</url>
     </organization>
     <developers>
         <developer>
-            <name>Luis Felipe Mendivelso Osorio</name>
-            <email>lf.mendivelso10@uniandes.edu.co</email>
-        </developer>
-        <developer>
-            <name>Camilo Andres Mendoza Arrieta</name>
-            <email>ca.mendoza968@uniandes.edu.co</email>
+            <name>Camilo Andrés Sánchez Salamanca</name>
+            <email>ca.sanchez38@uniandes.edu.co</email>
         </developer>
     </developers>
 
@@ -56,6 +52,14 @@
             <artifactId>jersey-client</artifactId>
             <version>1.8</version>
         </dependency>
+
+            <!-- #Dependencia para arreglar error 503# -->
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>1.8</version>
+        </dependency>
+
 
         <!-- ##### Servidor de Aplicaciones Embebido ##### -->
         <!-- # Jetty Servlet Support - Server# -->
@@ -102,29 +106,29 @@
             <version>3.5</version>
         </dependency>
         
-    <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>4.5.5</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.5</version>
+        </dependency>
 
-    <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>4.4.9</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.9</version>
+        </dependency>
                 
-    <dependency>
-        <groupId>org.eclipse.paho</groupId>
-        <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-        <version>1.1.0</version>
-    </dependency>
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.1.0</version>
+        </dependency>
     
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.2</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
 
     </dependencies>
 

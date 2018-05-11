@@ -18,7 +18,7 @@ public class JPAConnection {
             EntityManagerFactory emf;
             Map<String, String> propertyMap = new HashMap<>();
             propertyMap.put(CassandraConstants.CQL_VERSION, CassandraConstants.CQL_VERSION_3_0);
-            emf = Persistence.createEntityManagerFactory(CASSANDRA, propertyMap);
+            emf = Persistence.createEntityManagerFactory(CASSANDRA, propertyMap);           
             entityManager = emf.createEntityManager();
         }
     }
@@ -26,5 +26,4 @@ public class JPAConnection {
     public EntityManager getEntityManager() {
         return entityManager;
     }
-
 }
