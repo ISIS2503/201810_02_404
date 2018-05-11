@@ -169,7 +169,10 @@ public class SimpleMqttClient implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         final String payload = new String(message.getPayload());
+        if(payload.contains("::")){
         String[] data = payload.split("::");
+        }
+        else data = payload.split(":");
         if (data.length == 2) {
             Date now = new Date();
             // TODO: Comprobar que está ingresando en los horarios dados
