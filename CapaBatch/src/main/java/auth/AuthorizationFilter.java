@@ -54,8 +54,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
     public enum Role {
         admin,
-        user,
-        service,
+        yale,
         seguridad, 
         client
     }
@@ -104,6 +103,20 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 return Arrays.asList(allowedRoles);
             }
         }
+    }
+    
+    public List sacar(ContainerRequestContext requestContext){
+        String authorizationHeader
+                = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        String token = authorizationHeader
+                .substring(AUTHENTICATION_SCHEME.length()).trim();
+        List<String> roles = new ArrayList();
+        if (!JWT.decode(token).getClaim("gty").isNull() && JWT.decode(token).getClaim("gty").asString().equals("client-credentials")) {
+            roles.add("service");
+        } else {
+            roles = JWT.decode(token).getClaim("http://yalesecure/roles").asList(String.class);
+        }
+        return roles;
     }
 
     private void checkPermissions(ContainerRequestContext requestContext, List<Role> allowedRoles) throws Exception {

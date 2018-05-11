@@ -8,7 +8,6 @@ model\dto\model\HubDTO.class
 auth\Secured.class
 logic\ScheduleLogic.class
 service\PassService.class
-main\HealthCheckCounter.class
 model\dto\converter\UserConverter.class
 model\entity\UserEntity.class
 logic\LockLogic.class
@@ -52,7 +51,6 @@ model\dto\converter\ScheduleConverter.class
 persistence\Persistencer.class
 mqtt\publisher\MqttPublisher.class
 persistence\PropertyPersistence.class
-main\SimpleMqttClient$3.class
 model\entity\HubEntity.class
 model\entity\ResidentialUnitEntity.class
 model\entity\ScheduleEntity.class

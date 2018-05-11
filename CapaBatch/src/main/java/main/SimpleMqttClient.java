@@ -24,11 +24,14 @@
 package main;
  
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import logic.AlertLogic;
+import logic.ScheduleLogic;
 import model.dto.model.AlertDTO;
+import model.dto.model.ScheduleDTO;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -49,7 +52,7 @@ public class SimpleMqttClient implements MqttCallback {
     MqttClient myClient;
     MqttConnectOptions connOpt;
  
-    static final String BROKER_URL = "tcp://localhost:8083";
+    static final String BROKER_URL = "tcp://172.24.42.107:8083";
  
     // the following two flags control whether this example is a publisher, a subscriber or both
     static final Boolean subscriber = true;
@@ -57,9 +60,6 @@ public class SimpleMqttClient implements MqttCallback {
  
     private final static String infoInoTopic = "info_ino.apto1";
     private final static String infoHubTopic = "info_hub.apto1";
-    private final static int maxLostHealthChecks = 3;
-    private final static long healthCheckFrequency = 100;
-    private static HealthCheckCounter lostHealthChecks = new HealthCheckCounter();
  
     /**
      *
@@ -71,10 +71,13 @@ public class SimpleMqttClient implements MqttCallback {
     public void runClient() {
         // setup MQTT Client
         String clientID = "apto01";
+        String pass = "1234";
         connOpt = new MqttConnectOptions();
  
         connOpt.setCleanSession(true);
         connOpt.setKeepAliveInterval(30);
+        connOpt.setUserName("isis2503");
+        connOpt.setPassword(pass.toCharArray());
  
         alertaLogic = new AlertLogic();
  
@@ -97,8 +100,6 @@ public class SimpleMqttClient implements MqttCallback {
             try {
                 int subQoS = 0;
                 myClient.subscribe(infoInoTopic, subQoS);
-                // Start timer
-                timer.start();
             } catch (MqttException e) {
                 e.printStackTrace();
             }
@@ -112,20 +113,6 @@ public class SimpleMqttClient implements MqttCallback {
             e.printStackTrace();
         }
     }
-     
-    static Thread timer = new Thread() {
-        @Override
-        public void run() {
-            while (subscriber) {                
-                try {
-                    Thread.sleep(healthCheckFrequency);
-                    lostHealthChecks.add();
-               } catch (InterruptedException ex) {
-                    Logger.getLogger(SimpleMqttClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    };
  
     static Thread t1 = new Thread() {
         @Override
@@ -162,22 +149,42 @@ public class SimpleMqttClient implements MqttCallback {
     };
  
     public static void main(String agrs[]) {
-        //t1.start();
+        t1.start();
         t2.start();
     }
  
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         final String payload = new String(message.getPayload());
-        String[] data = payload.split("::");
+        String[] data = payload.split("::");        
+        System.out.print(payload);
         if (data.length == 2) {
-            Date now = new Date();
+            boolean response = false;
+            Date now1 = new Date();
+            Date nowmin = new Date();
+            Date nowmax = new Date();
             // TODO: Comprobar que está ingresando en los horarios dados
-            myClient.publish(infoHubTopic, new MqttMessage(true ? "*".getBytes() : "&".getBytes()));
+            
+            ScheduleLogic logic = new ScheduleLogic();
+            List<ScheduleDTO> lista = logic.findScheduleByUserId(data[1]);                   
+            boolean ya = false;
+            
+            for(ScheduleDTO s : lista){
+                nowmin.setHours(s.getMinHour().getHours());
+                nowmax.setHours(s.getMaxHour().getHours());
+                nowmin.setMinutes(s.getMinHour().getMinutes());
+                nowmax.setMinutes(s.getMaxHour().getMinutes());
+                
+                if(nowmin.before(now1)&&nowmax.after(now1)){
+                    response = true;
+                    break;
+                }
+            }
+            
+            myClient.publish(infoHubTopic, new MqttMessage(response ? "*".getBytes() : "&".getBytes()));
         } else {
             switch (data[1]) {
-                case "0":
-                    lostHealthChecks.setCount(0);
+                case "-1":
                     break;
                 default:
                     alertaLogic.add(                            

@@ -274,4 +274,17 @@ public class Persistencer<T, PK> {
         }
         return entities;
     }
+    
+    public List<T> findByneighborhoodId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.neighborhood = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
 }

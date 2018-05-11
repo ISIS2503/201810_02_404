@@ -27,6 +27,10 @@ import auth.AuthorizationFilter.Role;
 import auth.Secured;
 import com.sun.istack.logging.Logger;
 import interfaces.ILogic;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.DELETE;
@@ -39,7 +43,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import logic.AlertLogic;
+import logic.LockLogic;
+import logic.PropertyLogic;
+import logic.ResidentialUnitLogic;
 import model.dto.model.AlertDTO;
+import model.dto.model.LockDTO;
+import model.dto.model.PropertyDTO;
+import model.dto.model.ResidentialUnitDTO;
 
 @Path("/alert")
 @Produces(MediaType.APPLICATION_JSON)
@@ -59,8 +69,22 @@ public class AlertService {
     
     @POST
     @Secured({Role.admin})
-    public AlertDTO add(AlertDTO dto) {
-        return (AlertDTO) alertLogic.add(dto);
+    public Response add(AlertDTO dto) {
+        
+        PropertyLogic pl = new PropertyLogic();       
+        ResidentialUnitLogic rl = new ResidentialUnitLogic();
+        LockLogic ll = new LockLogic();
+        try {
+            PropertyDTO pe = pl.find(dto.getIdProperty());
+            ResidentialUnitDTO re = rl.find(dto.getIdResidentialUnity());
+            LockDTO le = ll.find(dto.getIdLock());
+            
+            alertLogic.add(dto);
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Alert was added").build();                
+        } catch (Exception e) {
+            Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
+            return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the Ids, Please use a existing Id.").build();
+        }        
     }
 
     @PUT
@@ -80,5 +104,56 @@ public class AlertService {
             Logger.getLogger(AlertService.class).log(Level.WARNING, e.getMessage());
             return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We found errors in your query, please contact the Web Admin.").build();
         }
+    }
+    
+     
+    @GET
+    @Path("/neigh/{id}")
+    @Secured({Role.admin})
+    public List<AlertDTO> findByNeighboorHood(@PathParam("id") String id) {
+        
+        ResidentialUnitLogic re = new ResidentialUnitLogic();
+        List<ResidentialUnitDTO> listaR =  re.findByneighborhoodId(id);        
+        List<AlertDTO> lista1 =  alertLogic.findByIdResidentialUnit(id);
+        List<AlertDTO> lista2 =  new ArrayList<>();
+        Date hoy = new Date();
+        for(AlertDTO a: lista1){
+            if(a.getDate().getMonth()==hoy.getMonth()){
+                lista2.add(a);
+            }            
+        }
+        return lista2;
+    }
+            
+    
+    @GET
+    @Path("/prop/{id}")
+    @Secured({Role.admin})
+    public List<AlertDTO> findByProperty(@PathParam("id") String id) {
+        List<AlertDTO> lista1 =  alertLogic.findByIdProperty(id);
+        List<AlertDTO> lista2 =  new ArrayList<>();
+        Date hoy = new Date();
+        for(AlertDTO a: lista1){
+            if(a.getDate().getMonth()==hoy.getMonth()){
+                lista2.add(a);
+            }            
+        }
+        return lista2;
+    }
+            
+             
+    @GET
+    @Path("/resi/{id}")
+    @Secured({Role.admin})
+    public List<AlertDTO> findByResidentialUnit(@PathParam("id") String id) {
+        List<AlertDTO> lista1 =  alertLogic.findByIdResidentialUnit(id);
+        List<AlertDTO> lista2 =  new ArrayList<>();
+        Date hoy = new Date();
+        for(AlertDTO a: lista1){
+            if(a.getDate().getMonth()==hoy.getMonth()){
+                lista2.add(a);
+            }            
+        }
+        return lista2;
     }
 }

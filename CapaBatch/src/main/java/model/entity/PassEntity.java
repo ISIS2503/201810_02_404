@@ -39,7 +39,7 @@ import org.hibernate.annotations.Cascade;
  * @author Dexcrash
  */
 @Entity
-@Table(name = "PASS")
+@Table(name = "PASSWORDS")
 public class PassEntity implements Serializable{
     
     

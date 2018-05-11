@@ -56,7 +56,7 @@ public class ScheduleService {
     }
     
     @GET
-    @Secured({Role.admin,Role.client})
+    @Secured({Role.admin})
     public List<ScheduleDTO> findAll() {
         return scheduleLogic.findAll();
     }

@@ -23,6 +23,7 @@
  */
 package model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -44,8 +45,10 @@ import javax.persistence.Temporal;
 public class ScheduleEntity implements Serializable{
     
     @Id
-    private String id;    
+    private String id;   
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm")
     private Date minHour;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm")
     private Date maxHour;
     private String idUser;
     private String idLock;

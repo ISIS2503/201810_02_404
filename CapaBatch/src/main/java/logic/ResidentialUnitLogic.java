@@ -66,7 +66,7 @@ public class ResidentialUnitLogic implements ILogic<ResidentialUnitDTO> {
         return persistence.delete(id);
     }
     
-    public List<ResidentialUnitDTO> findResidentialUnityByHood(String id){
-        return CONVERTER.listEntitiesToListDTOs(persistence.findResidentialUnityByHood(id));
+    public List<ResidentialUnitDTO> findByneighborhoodId(String id){
+        return CONVERTER.listEntitiesToListDTOs(persistence.findByneighborhoodId(id));
     }
 }

@@ -49,7 +49,7 @@ import model.dto.model.LockDTO;
 import model.dto.model.PassDTO;
 
 @Path("/lock")
-@Secured({Role.admin,Role.client})
+@Secured({Role.admin})
 @Produces(MediaType.APPLICATION_JSON)
 public class LockService {
 
@@ -60,12 +60,10 @@ public class LockService {
     }
     
     @GET
-    @Secured({Role.admin,Role.client})
     public List<LockDTO> all() {
         return lockLogic.findAll();
     }
     @POST
-    @Secured({Role.admin})
     public Response add(LockDTO dto) {
         HubLogic hl = new HubLogic();       
         try {
@@ -79,13 +77,11 @@ public class LockService {
     }
 
     @PUT
-    @Secured({Role.admin})
     public LockDTO update(LockDTO dto) {
         return (LockDTO) lockLogic.update(dto);
     }
      @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         PassLogic pl = new PassLogic();
         List<PassDTO> lista = pl.findPassByLockId(id);

@@ -54,7 +54,7 @@ public class UserService {
     }
     
     @GET
-    @Secured({Role.admin,Role.client})
+    @Secured({Role.admin})
     public List<UserDTO> findAll() {
         return userLogic.findAll();
     }

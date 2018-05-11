@@ -47,7 +47,7 @@ import model.dto.model.LockDTO;
 import model.dto.model.PropertyDTO;
 
 @Path("/hub")
-@Secured({Role.admin,Role.client})
+@Secured({Role.admin})
 @Produces(MediaType.APPLICATION_JSON)
 public class HubService {
 
@@ -58,12 +58,10 @@ public class HubService {
     }
     
     @GET
-    @Secured({Role.admin,Role.client})
     public List<HubDTO> findAll() {
         return hubLogic.findAll();
     }
     @POST
-    @Secured({Role.admin})
     public Response add(HubDTO dto) {
         PropertyLogic pl = new PropertyLogic();       
         try {
@@ -77,13 +75,11 @@ public class HubService {
     }
 
     @PUT
-    @Secured({Role.admin})
     public HubDTO update(HubDTO dto) {
         return (HubDTO) hubLogic.update(dto);
     }
      @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         LockLogic ll = new LockLogic();
         List<LockDTO> lista = ll.findLockByHubId(id);

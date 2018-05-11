@@ -31,9 +31,11 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import logic.LockLogic;
@@ -41,6 +43,7 @@ import logic.PassLogic;
 import logic.ScheduleLogic;
 import model.dto.model.LockDTO;
 import model.dto.model.PassDTO;
+import model.dto.model.PropertyDTO;
 import mqtt.publisher.MqttPublisher;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
@@ -48,7 +51,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
  *
  * @author jd.correa
  */
-@Path("/pass")
+@Path("/passwords")
 @Consumes(MediaType.APPLICATION_JSON)
 @Secured({Role.client})
 public class PassService {
@@ -58,7 +61,7 @@ public class PassService {
     private final static String DELETE_COMMAND = "DELETE_PASSWORD";
     private final static String DELETE_ALL_COMMAND = "DELETE_ALL_PASSWORDS";    
     private final static String SEPARATOR = ";";    
-    private final static String TOPIC = "clave.apto1";
+    private final static String TOPIC = "info_hub.apto1";
     
     private final ILogic passLogic;
 
@@ -70,11 +73,17 @@ public class PassService {
     public Response addPass(PassDTO pass) throws MqttException {
         
         LockLogic ll = new LockLogic();       
+        Boolean r;
         try {
             LockDTO le = ll.find(pass.getIdLock());
-            passLogic.add(pass);
-            
-            String message = ADD_COMMAND
+            passLogic.add(pass);            
+            r=true;
+        } catch (Exception e) {
+            Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
+            r =false;
+        }        
+        
+        String message = ADD_COMMAND
                 + SEPARATOR 
                 + pass.getId()
                 + SEPARATOR 
@@ -83,11 +92,8 @@ public class PassService {
                 .sendMessage(TOPIC, message)
                 .disconnect();
         
-        return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Pass was added").build();                
-        } catch (Exception e) {
-            Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
-            return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the Lock with the Id, Please use a existing Id.").build();
-        }        
+        if(r)return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Pass was added").build();                
+        else return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the Lock with the Id, Please use a existing Id.").build();
     }
     
     @PUT
@@ -105,14 +111,20 @@ public class PassService {
     }
     
     @DELETE
-    public String deletePass(PassDTO pass) throws MqttException {
+    public Response deletePass(PassDTO pass) throws MqttException {
         String message = DELETE_COMMAND
                 + SEPARATOR 
                 + pass.getId();
         new MqttPublisher("apto01")
                 .sendMessage(TOPIC, message)
                 .disconnect();
-        return "200";        
+        try {
+            passLogic.delete(pass.getId());
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Property was deleted").build();
+        } catch (Exception e) {
+            Logger.getLogger(ResidentialUnitService.class).log(Level.WARNING, e.getMessage());
+            return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We found errors in your query, please contact the Web Admin.").build();
+        }        
     }
     
     @DELETE
@@ -124,5 +136,15 @@ public class PassService {
                 .disconnect();
         return "200";
     }
-    
+ 
+    @GET
+    @Path("/{id}")
+    public PropertyDTO find(@PathParam("id") String id) {
+        return (PropertyDTO) passLogic.find(id);
+    }
+
+    @GET
+    public List<PropertyDTO> findAll() {
+        return passLogic.findAll();
+    }
 }

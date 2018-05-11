@@ -36,7 +36,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  */
 public class MqttPublisher implements MqttCallback {
     
-    private static final String BROKER_URL = "tcp://localhost:8083";
+    private static final String BROKER_URL = "tcp://172.24.42.107:8083";
     
     private MqttClient client;
     private MqttConnectOptions connOpt;

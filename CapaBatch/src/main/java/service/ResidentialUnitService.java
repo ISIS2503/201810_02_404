@@ -38,8 +38,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import logic.HubLogic;
+import logic.LockLogic;
+import logic.PassLogic;
 import logic.PropertyLogic;
 import logic.ResidentialUnitLogic;
+import model.dto.model.HubDTO;
+import model.dto.model.LockDTO;
 import model.dto.model.PropertyDTO;
 import model.dto.model.ResidentialUnitDTO;
 import model.entity.PropertyEntity;
@@ -68,13 +73,13 @@ public class ResidentialUnitService {
 
     @GET
     @Path("/{id}")
-    @Secured({Role.admin,Role.seguridad})
+    @Secured({Role.admin})
     public ResidentialUnitDTO find(@PathParam("id") String id) {
         return (ResidentialUnitDTO) residentialUnitLogic.find(id);
     }
 
     @GET
-    @Secured({Role.admin,Role.seguridad})
+    @Secured({Role.admin})
     public List<ResidentialUnitDTO> findAll() {
         return residentialUnitLogic.findAll();
     }
@@ -84,10 +89,24 @@ public class ResidentialUnitService {
     @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         PropertyLogic pl = new PropertyLogic();
+        HubLogic hl = new HubLogic();
+        LockLogic ll = new LockLogic();
+        PassLogic psl = new PassLogic();
         List<PropertyDTO> lista = pl.findPropertyByResidentialUnityId(id);
+        
         try {
             for(PropertyDTO p : lista){
+                List<HubDTO> listaH = hl.findHubByPropertyId(p.getId());
+                for(HubDTO h:listaH){
+                    List<LockDTO> listaL = ll.findLockByHubId(h.getId());
+                    for(LockDTO l:listaL){
+                        
+                        ll.delete(l.getId());
+                    }
+                    hl.delete(h.getId());
+                }
                 pl.delete(p.getId());
+                
             }
             residentialUnitLogic.delete(id);
             return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Conjunto was deleted").build();

@@ -41,8 +41,11 @@ import javax.ws.rs.core.Response;
 import auth.Secured;
 import interfaces.ILogic;
 import logic.HubLogic;
+import logic.LockLogic;
+import logic.PassLogic;
 import logic.ResidentialUnitLogic;
 import model.dto.model.HubDTO;
+import model.dto.model.LockDTO;
 import model.dto.model.ResidentialUnitDTO;
 import model.entity.ResidentialUnitEntity;
 
@@ -78,13 +81,13 @@ public class PropertyService {
 
     @GET
     @Path("/{id}")
-    @Secured({Role.admin,Role.seguridad})
+    @Secured({Role.admin})
     public PropertyDTO find(@PathParam("id") String id) {
         return (PropertyDTO) propertyLogic.find(id);
     }
 
     @GET
-    @Secured({Role.admin,Role.seguridad})
+    @Secured({Role.admin})
     public List<PropertyDTO> findAll() {
         return propertyLogic.findAll();
     }
@@ -94,11 +97,19 @@ public class PropertyService {
     @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         HubLogic hl = new HubLogic();
-        List<HubDTO> lista = hl.findHubByPropertyId(id);
-        try {
-            for(HubDTO h : lista){
-                hl.delete(h.getId());
-            }
+        LockLogic ll = new LockLogic();      
+        List<HubDTO> listaH = hl.findHubByPropertyId(id);
+        
+        try {           
+                for(HubDTO h:listaH){
+                    List<LockDTO> listaL = ll.findLockByHubId(h.getId());
+                    for(LockDTO l:listaL){
+                        
+                        ll.delete(l.getId());
+                    }
+                    hl.delete(h.getId());
+                }                
+            
             propertyLogic.delete(id);
             return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Property was deleted").build();
         } catch (Exception e) {
