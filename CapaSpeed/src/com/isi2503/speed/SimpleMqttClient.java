@@ -20,7 +20,7 @@ public class SimpleMqttClient implements MqttCallback {
 	MqttClient myClient;
 	MqttConnectOptions connOpt;
 
-	static final String BROKER_URL = "tcp://localhost:8083";
+	static final String BROKER_URL = "tcp://172.24.42.107:8083";
 	boolean silenciar = false;
 	EmailSenderService email = new EmailSenderService();
 
@@ -35,24 +35,7 @@ public class SimpleMqttClient implements MqttCallback {
 	 */
 	@Override
 	public void connectionLost(Throwable t) {
-		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        time.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String times = time.format(new Date());
-		String envio = "{\"id\":\""+555+"\", \"type\":5"+", \"time\":\""+times+"\"}";
 		email.sendEmail("En la cerradura de id:555 se ha detectado una alarma de tipo HUB fuera de línea.");
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new Speed(envio);
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 		System.out.println("Connection lost!");
 	}
 
@@ -79,7 +62,7 @@ public class SimpleMqttClient implements MqttCallback {
 		connOpt = new MqttConnectOptions();
 
 		connOpt.setCleanSession(true);
-		connOpt.setKeepAliveInterval(30);
+		connOpt.setKeepAliveInterval(20);
 
 		// Connect to Broker
 		try {
@@ -95,7 +78,7 @@ public class SimpleMqttClient implements MqttCallback {
 
 		// setup topic
 		// topics on m2m.io are in the form <domain>/<stuff>/<thing>
-		String myTopic = "alerta.apto1";
+		String myTopic = "info_ino.apto1";
 		MqttTopic topic = myClient.getTopic(myTopic);
 
 		// subscribe to topic if subscriber
@@ -148,33 +131,26 @@ public class SimpleMqttClient implements MqttCallback {
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         time.setTimeZone(TimeZone.getTimeZone("UTC"));
         String times = time.format(new Date());
-		String envio = "{\"id\":\""+s[2]+"\", \"type\":"+s[1]+", \"time\":\""+times+"\"}";
 		System.out.println("-------------------------------------------------");
 		System.out.println("| Topic: " + topic);
 		System.out.println("| Message: " + payload);
 		System.out.println("-------------------------------------------------");
 		// Recibe el mensaje y lo envÃ­a al mock de manera asincrona
 		if(!payload.contains("silenciar") && !silenciar && !s[1].contains("-1")) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new Speed(envio);
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 		if(s[1].contains("0")) {
-			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Tiempo Máximo de Apertura Sobrepasado.");
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Tiempo Máximo de Apertura Sobrepasado. Tiempo de alarma:"+times);
 		}
 		else if(s[1].contains("1")) {
-			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Intentos de apertura sobrepasados.");
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Intentos de apertura sobrepasados.Tiempo de alarma:"+times);
 		}
 		else if(s[1].contains("2")) {
-			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Sensor de Presencia Activado.");
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Sensor de Presencia Activado.Tiempo de alarma:"+times);
+		}
+		else if(s[1].contains("3")) {
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Batería Agotada.Tiempo de alarma:"+times);
+		}
+		else if(s[1].contains("4")) {
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Horario no Autorizado.Tiempo de alarma:"+times);
 		}
 		}
 		else if (payload.contains("silenciar")) silenciar=!silenciar;
