@@ -22,6 +22,7 @@ public class SimpleMqttClient implements MqttCallback {
 
 	static final String BROKER_URL = "tcp://localhost:8083";
 	boolean silenciar = false;
+	EmailSenderService email = new EmailSenderService();
 
 	static final Boolean subscriber = true;
 	static final Boolean publisher = false;
@@ -37,7 +38,9 @@ public class SimpleMqttClient implements MqttCallback {
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         time.setTimeZone(TimeZone.getTimeZone("UTC"));
         String times = time.format(new Date());
-		String envio = "{\"id\":\""+555+"\", \"type\": 5"+", \"time\":\""+times+"\"}";
+		String envio = "{\"id\":\""+555+"\", \"type\":5"+", \"time\":\""+times+"\"}";
+		email.sendEmail("En la cerradura de id:555 se ha detectado una alarma de tipo HUB fuera de línea.");
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -146,13 +149,12 @@ public class SimpleMqttClient implements MqttCallback {
         time.setTimeZone(TimeZone.getTimeZone("UTC"));
         String times = time.format(new Date());
 		String envio = "{\"id\":\""+s[2]+"\", \"type\":"+s[1]+", \"time\":\""+times+"\"}";
-		String envio2 = "{\"id\":\""+s[2]+"\", \"type\": 4" +", \"time\":\""+times+"\"}";
 		System.out.println("-------------------------------------------------");
 		System.out.println("| Topic: " + topic);
 		System.out.println("| Message: " + payload);
 		System.out.println("-------------------------------------------------");
 		// Recibe el mensaje y lo envÃ­a al mock de manera asincrona
-		if(!payload.contains("silenciar") && !silenciar && s[1]!="-1") {
+		if(!payload.contains("silenciar") && !silenciar && !s[1].contains("-1")) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -165,6 +167,15 @@ public class SimpleMqttClient implements MqttCallback {
 				}
 			}
 		}).start();
+		if(s[1].contains("0")) {
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Tiempo Máximo de Apertura Sobrepasado.");
+		}
+		else if(s[1].contains("1")) {
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Intentos de apertura sobrepasados.");
+		}
+		else if(s[1].contains("2")) {
+			email.sendEmail("En la cerradura de id:"+s[2]+" se ha detectado una alarma de tipo Sensor de Presencia Activado.");
+		}
 		}
 		else if (payload.contains("silenciar")) silenciar=!silenciar;
 	}
