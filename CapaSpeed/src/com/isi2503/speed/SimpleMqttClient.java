@@ -26,6 +26,8 @@ public class SimpleMqttClient implements MqttCallback {
 
 	static final Boolean subscriber = true;
 	static final Boolean publisher = false;
+	static final String M2MIO_USERNAME = "isis2503";
+	static final String M2MIO_PASSWORD_MD5 = "1234";
 
 	/**
 	 * 
@@ -63,6 +65,8 @@ public class SimpleMqttClient implements MqttCallback {
 
 		connOpt.setCleanSession(true);
 		connOpt.setKeepAliveInterval(20);
+		connOpt.setUserName(M2MIO_USERNAME);
+		connOpt.setPassword(M2MIO_PASSWORD_MD5.toCharArray());
 
 		// Connect to Broker
 		try {
