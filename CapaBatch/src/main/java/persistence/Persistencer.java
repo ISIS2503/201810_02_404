@@ -46,11 +46,9 @@ public class Persistencer<T, PK> {
 
     public T add(T entity) {
         try {
-
             entityManager.getTransaction().begin();
             entityManager.persist(entity);
             entityManager.getTransaction().commit();
-
         } catch (RuntimeException e) {
             LOG.log(Level.WARNING, e.getMessage());
         }
@@ -104,6 +102,123 @@ public class Persistencer<T, PK> {
         }
     }
 
+    public List<T> findAlertByResidentialUnityId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+
+    public List<T> findAlertByPropertyId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findAlertByLockId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findScheduleByUserId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findPassByNumberId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findLockByHubId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findHubByPropertyId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findPropertyByResidentialUnityId(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
+    public List<T> findResidentialUnityByHood(String id) {
+        List<T> entities;
+        String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.residentialUnity.hood = :id";
+        Query query = entityManager.createQuery(queryString).setParameter("id", id);
+        try {
+            entities = query.getResultList();
+        } catch (NoResultException | NonUniqueResultException e) {
+            entities = null;
+            LOG.log(Level.WARNING, e.getMessage());
+        }
+        return entities;
+    }
+    
     public List<T> findByConjuntoId(String id) {
         List<T> entities;
         String queryString = "Select c FROM " + entityClass.getSimpleName() + " c where c.conjunto.id = :id";

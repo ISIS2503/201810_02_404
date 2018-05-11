@@ -59,35 +59,35 @@ public class PasswordService {
     public String addPassword(PassDTO pass) throws MqttException {
         String message = ADD_COMMAND
                 + SEPARATOR 
-                + pass.getIndex()
+                + pass.getId()
                 + SEPARATOR 
-                + pass.getNuevaPass() 
+                + pass.getPassNumber()
                 + END;
         new MqttPublisher("apto01")
                 .sendMessage(TOPIC, message)
                 .disconnect();
-        return pass.getNuevaPass();
+        return ""+pass.getPassNumber();
     }
     
     @PUT
     public String changePassword(PassDTO pass) throws MqttException {
         String message = CHANGE_COMMAND
                 + SEPARATOR 
-                + pass.getIndex()
+                + pass.getId()
                 + SEPARATOR 
-                + pass.getNuevaPass() 
+                + pass.getPassNumber()
                 + END;
         new MqttPublisher("apto01")
                 .sendMessage(TOPIC, message)
                 .disconnect();
-        return pass.getNuevaPass();
+        return ""+pass.getPassNumber();
     }
     
     @DELETE
     public String deletePassword(PassDTO pass) throws MqttException {
         String message = DELETE_COMMAND
                 + SEPARATOR 
-                + pass.getIndex()
+                + pass.getId()
                 + END;
         new MqttPublisher("apto01")
                 .sendMessage(TOPIC, message)

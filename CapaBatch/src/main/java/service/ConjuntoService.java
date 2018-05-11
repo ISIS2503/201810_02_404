@@ -25,10 +25,8 @@ package service;
 
 import auth.AuthorizationFilter.Role;
 import auth.Secured;
-import interfaces.IConjuntoLogic;
-import logic.ConjuntoLogic;
-import model.dto.model.ConjuntoDTO;
 import com.sun.istack.logging.Logger;
+import interfaces.ILogic;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.DELETE;
@@ -40,40 +38,42 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import logic.ResidentialUnitLogic;
+import model.dto.model.ResidentialUnitDTO;
 
 @Path("/conjuntos")
 @Produces(MediaType.APPLICATION_JSON)
 public class ConjuntoService {
 
-    private final IConjuntoLogic conjuntoLogic;
+    private final ILogic residentialUnitLogic;
 
     public ConjuntoService() {
-        this.conjuntoLogic = new ConjuntoLogic();
+        this.residentialUnitLogic = new ResidentialUnitLogic();
     }
 
     @POST
     @Secured({Role.admin})
-    public ConjuntoDTO add(ConjuntoDTO dto) {
-        return conjuntoLogic.add(dto);
+    public ResidentialUnitDTO add(ResidentialUnitDTO dto) {
+        return (ResidentialUnitDTO) residentialUnitLogic.add(dto);
     }
 
     @PUT
     @Secured({Role.admin})
-    public ConjuntoDTO update(ConjuntoDTO dto) {
-        return conjuntoLogic.update(dto);
+    public ResidentialUnitDTO update(ResidentialUnitDTO dto) {
+        return (ResidentialUnitDTO) residentialUnitLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
     @Secured({Role.admin,Role.seguridad})
-    public ConjuntoDTO find(@PathParam("id") String id) {
-        return conjuntoLogic.find(id);
+    public ResidentialUnitDTO find(@PathParam("id") String id) {
+        return (ResidentialUnitDTO) residentialUnitLogic.find(id);
     }
 
     @GET
     @Secured({Role.admin,Role.seguridad})
-    public List<ConjuntoDTO> all() {
-        return conjuntoLogic.all();
+    public List<ResidentialUnitDTO> findAll() {
+        return residentialUnitLogic.findAll();
     }
 
     @DELETE
@@ -81,7 +81,7 @@ public class ConjuntoService {
     @Secured({Role.admin})
     public Response delete(@PathParam("id") String id) {
         try {
-            conjuntoLogic.delete(id);
+            residentialUnitLogic.delete(id);
             return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Conjunto was deleted").build();
         } catch (Exception e) {
             Logger.getLogger(ConjuntoService.class).log(Level.WARNING, e.getMessage());

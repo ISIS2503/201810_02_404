@@ -32,39 +32,51 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PassDTO {
     
-    private String viejaPass;
-    private int index;
-    private String nuevaPass;
-    
-    public PassDTO(){
+    private String id;
+    private int passNumber;
+    private String idUser;
+    private String idLock;    
+
+    public PassDTO() {
     }
 
-    public String getViejaPass() {
-        return viejaPass;
+    public PassDTO(String id, int passNumber, String idUser, String idLock) {
+        this.id = id;
+        this.passNumber = passNumber;
+        this.idUser = idUser;
+        this.idLock = idLock;
     }
 
-    public void setViejaPass(String viejaPass) {
-        this.viejaPass = viejaPass;
+    public String getId() {
+        return id;
     }
 
-    public String getNuevaPass() {
-        return nuevaPass;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setNuevaPass(String nuevaPass) {
-        this.nuevaPass = nuevaPass;
+    public int getPassNumber() {
+        return passNumber;
     }
 
-    public int getIndex() {
-        return index;
+    public void setPassNumber(int passNumber) {
+        this.passNumber = passNumber;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public String getIdUser() {
+        return idUser;
     }
-        
-    @Override
-    public String toString(){
-        return viejaPass+","+nuevaPass;
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
+
+    public String getIdLock() {
+        return idLock;
+    }
+
+    public void setIdLock(String idLock) {
+        this.idLock = idLock;
+    }
+      
 }
