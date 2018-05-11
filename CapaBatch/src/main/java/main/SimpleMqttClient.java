@@ -149,7 +149,7 @@ public class SimpleMqttClient implements MqttCallback {
     };
     
     public static void main(String agrs[]) {
-        t1.start();
+        //t1.start();
         t2.start();
     }
     

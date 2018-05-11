@@ -3,9 +3,9 @@
     <persistence-unit name="cassandra_db" transaction-type="RESOURCE_LOCAL">
         <provider>com.impetus.kundera.KunderaPersistence</provider>
         <properties>
-            <property name="kundera.nodes" value="localhost"/>
-            <property name="kundera.port" value="8088"/>
-            <property name="kundera.keyspace" value="Yale"/>
+            <property name="kundera.nodes" value="172.24.42.105"/>
+            <property name="kundera.port" value="8999"/>
+            <property name="kundera.keyspace" value="Yale1"/>
             <property name="kundera.dialect" value="cassandra"/>
             <property name="kundera.client.lookup.class" value="com.impetus.client.cassandra.thrift.ThriftClientFactory"/>
             <property name="kundera.ddl.auto.prepare" value="create-drop"/>

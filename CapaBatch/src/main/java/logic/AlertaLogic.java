@@ -23,15 +23,11 @@
  */
 package logic;
 import interfaces.IAlertaLogic;
-import java.util.LinkedList;
 import static model.dto.converter.AlertaConverter.CONVERTER;
 import model.dto.model.AlertaDTO;
 import persistence.AlertaPersistence;
 import java.util.List;
 import java.util.UUID;
-import model.dto.converter.InmuebleConverter;
-import model.dto.model.InmuebleDTO;
-import model.entity.InmuebleEntity;
 
 public class AlertaLogic implements IAlertaLogic {
 
