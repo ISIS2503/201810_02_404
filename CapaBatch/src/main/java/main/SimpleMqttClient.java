@@ -25,9 +25,6 @@ package main;
  
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import logic.AlertLogic;
 import logic.ScheduleLogic;
 import model.dto.model.AlertDTO;
@@ -40,7 +37,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
  
 /**
  *

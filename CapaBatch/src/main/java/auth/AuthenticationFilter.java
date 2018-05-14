@@ -31,6 +31,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -62,7 +63,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     public static final String AUTHENTICATION_SCHEME = "Bearer";
 
-    final JwkProvider provider = new UrlJwkProvider("https://secureyalecode.auth0.com/.well-known/jwks.json");
+    final JwkProvider provider = new UrlJwkProvider("https://isis2503-404.auth0.com/.well-known/jwks.json");
     final String privateKeyId = "PK";
     RSAKeyProvider keyProvider = new RSAKeyProvider() {
         @Override
@@ -103,15 +104,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     void verifyToken(String token) {
         try {//Cambiar por variables de entorno
-            String issuer = "https://isecureyalecode.auth0.com/";
+            String issuer = "https://isis2503-404.auth0.com/";
             String audience;
             //Access token
-            if (!JWT.decode(token).getClaim("gty").isNull() && JWT.decode(token).getClaim("gty").asString().equals("client-credentials")) {
-                audience = "uniandes.edu.co/yalesecure";
-            }
-            //ID token
-            else {
-                audience = "mo7oKFbwDPU5HcF5zExw8GFm6SjqZV6g5QusCdWwxF9vz4Nse1V5YON3Fj-4jJU1";
+            Claim c = JWT.decode(token).getClaim("gty");
+            if (!c.isNull() && c.asString().equals("password")) {
+                audience = "yale-404.com";
+            } else {
+                audience = "SvR6fwyOvILrnhnAEv48MgiTIxquEsm6";
             }
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(issuer)
