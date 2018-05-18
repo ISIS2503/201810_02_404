@@ -20,18 +20,22 @@ public class AlertEntity implements Serializable {
     private String idProperty;
     private String idLock;
     private String idResidentialUnity;
+    private String latitud;
+    private String longitud;
 
     public AlertEntity(){
         
     }
 
-    public AlertEntity(String id, int type, Date date, String idProperty, String idLock, String idResidentialUnity) {
+    public AlertEntity(String id, int type, Date date, String idProperty, String idLock, String idResidentialUnity, String latitud, String longitud) {
         this.id = id;
         this.type = type;
         this.date = date;
         this.idProperty = idProperty;
         this.idLock = idLock;
         this.idResidentialUnity = idResidentialUnity;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 
     public String getId() {
@@ -80,6 +84,22 @@ public class AlertEntity implements Serializable {
 
     public void setIdResidentialUnity(String idResidentialUnity) {
         this.idResidentialUnity = idResidentialUnity;
+    }
+
+    public String getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    public String getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
     }
     
     

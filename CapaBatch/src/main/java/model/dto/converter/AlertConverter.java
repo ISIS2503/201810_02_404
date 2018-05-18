@@ -45,6 +45,8 @@ public class AlertConverter implements IConverter<AlertEntity, AlertDTO>{
         dto.setIdProperty(entity.getIdProperty());
         dto.setDate(entity.getDate());
         dto.setType(entity.getType());
+        dto.setLatitud(entity.getLatitud());
+        dto.setLongitud(entity.getLongitud());
         return dto;
     }
 
@@ -57,6 +59,8 @@ public class AlertConverter implements IConverter<AlertEntity, AlertDTO>{
         entity.setIdProperty(dto.getIdProperty());
         entity.setDate(dto.getDate());
         entity.setType(dto.getType());
+        entity.setLatitud(dto.getLatitud());
+        entity.setLongitud(dto.getLongitud());
         return entity;
     }
 

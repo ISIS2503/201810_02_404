@@ -60,42 +60,42 @@ public class AlertService {
     public AlertService() {
         this.alertLogic = new AlertLogic();
     }
-    
+
     @GET
-    @Secured({Role.admin,Role.client})
+    @Secured({Role.yale})
     public List<AlertDTO> findAll() {
         return alertLogic.findAll();
     }
-    
+
     @POST
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response add(AlertDTO dto) {
-        
-        PropertyLogic pl = new PropertyLogic();       
+
+        PropertyLogic pl = new PropertyLogic();
         ResidentialUnitLogic rl = new ResidentialUnitLogic();
         LockLogic ll = new LockLogic();
         try {
             PropertyDTO pe = pl.find(dto.getIdProperty());
             ResidentialUnitDTO re = rl.find(dto.getIdResidentialUnity());
             LockDTO le = ll.find(dto.getIdLock());
-            
+
             alertLogic.add(dto);
-            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Alert was added").build();                
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Alert was added").build();
         } catch (Exception e) {
             Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
             return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the Ids, Please use a existing Id.").build();
-        }        
+        }
     }
 
     @PUT
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public AlertDTO update(AlertDTO dto) {
         return (AlertDTO) alertLogic.update(dto);
     }
-    
+
     @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         try {
             alertLogic.delete(id);
@@ -105,54 +105,51 @@ public class AlertService {
             return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We found errors in your query, please contact the Web Admin.").build();
         }
     }
-    
-     
+
     @GET
     @Path("/neigh/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public List<AlertDTO> findByNeighboorHood(@PathParam("id") String id) {
-        
+
         ResidentialUnitLogic re = new ResidentialUnitLogic();
-        List<ResidentialUnitDTO> listaR =  re.findByneighborhoodId(id);        
-        List<AlertDTO> lista1 =  alertLogic.findByIdResidentialUnit(id);
-        List<AlertDTO> lista2 =  new ArrayList<>();
+        List<ResidentialUnitDTO> listaR = re.findByneighborhoodId(id);
+        List<AlertDTO> lista1 = alertLogic.findByIdResidentialUnit(id);
+        List<AlertDTO> lista2 = new ArrayList<>();
         Date hoy = new Date();
-        for(AlertDTO a: lista1){
-            if(a.getDate().getMonth()==hoy.getMonth()){
+        for (AlertDTO a : lista1) {
+            if (a.getDate().getMonth() == hoy.getMonth()) {
                 lista2.add(a);
-            }            
+            }
         }
         return lista2;
     }
-            
-    
+
     @GET
     @Path("/prop/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale, Role.seguridad, Role.admin, Role.client})
     public List<AlertDTO> findByProperty(@PathParam("id") String id) {
-        List<AlertDTO> lista1 =  alertLogic.findByIdProperty(id);
-        List<AlertDTO> lista2 =  new ArrayList<>();
+        List<AlertDTO> lista1 = alertLogic.findByIdProperty(id);
+        List<AlertDTO> lista2 = new ArrayList<>();
         Date hoy = new Date();
-        for(AlertDTO a: lista1){
-            if(a.getDate().getMonth()==hoy.getMonth()){
+        for (AlertDTO a : lista1) {
+            if (a.getDate().getMonth() == hoy.getMonth()) {
                 lista2.add(a);
-            }            
+            }
         }
         return lista2;
     }
-            
-             
+
     @GET
     @Path("/resi/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale, Role.seguridad, Role.admin})
     public List<AlertDTO> findByResidentialUnit(@PathParam("id") String id) {
-        List<AlertDTO> lista1 =  alertLogic.findByIdResidentialUnit(id);
-        List<AlertDTO> lista2 =  new ArrayList<>();
+        List<AlertDTO> lista1 = alertLogic.findByIdResidentialUnit(id);
+        List<AlertDTO> lista2 = new ArrayList<>();
         Date hoy = new Date();
-        for(AlertDTO a: lista1){
-            if(a.getDate().getMonth()==hoy.getMonth()){
+        for (AlertDTO a : lista1) {
+            if (a.getDate().getMonth() == hoy.getMonth()) {
                 lista2.add(a);
-            }            
+            }
         }
         return lista2;
     }
