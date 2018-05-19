@@ -54,26 +54,26 @@ public class UserService {
     }
     
     @GET
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public List<UserDTO> findAll() {
         return userLogic.findAll();
     }
     
     @POST
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public UserDTO add(UserDTO dto) {
         return (UserDTO) userLogic.add(dto);
     }
 
     @PUT
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public UserDTO update(UserDTO dto) {
         return (UserDTO) userLogic.update(dto);
     }
     
     @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         ScheduleLogic sl = new ScheduleLogic();
         List<ScheduleDTO> lista = sl.findScheduleByUserId(id);

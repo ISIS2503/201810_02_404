@@ -126,7 +126,7 @@ public class AlertService {
 
     @GET
     @Path("/prop/{id}")
-    @Secured({Role.yale, Role.seguridad, Role.admin, Role.client})
+    @Secured({Role.yale, Role.seguridad, Role.admin, Role.client, Role.admin})
     public List<AlertDTO> findByProperty(@PathParam("id") String id) {
         List<AlertDTO> lista1 = alertLogic.findByIdProperty(id);
         List<AlertDTO> lista2 = new ArrayList<>();

@@ -47,7 +47,6 @@ import model.dto.model.LockDTO;
 import model.dto.model.PropertyDTO;
 
 @Path("/hub")
-@Secured({Role.admin})
 @Produces(MediaType.APPLICATION_JSON)
 public class HubService {
 
@@ -56,18 +55,21 @@ public class HubService {
     public HubService() {
         this.hubLogic = new HubLogic();
     }
-    
+
     @GET
+    @Secured({Role.yale})
     public List<HubDTO> findAll() {
         return hubLogic.findAll();
     }
+
     @POST
+    @Secured({Role.yale})
     public Response add(HubDTO dto) {
-        PropertyLogic pl = new PropertyLogic();       
+        PropertyLogic pl = new PropertyLogic();
         try {
             PropertyDTO pe = pl.find(dto.getIdProperty());
             hubLogic.add(dto);
-            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Hub was added").build();                
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Hub was added").build();
         } catch (Exception e) {
             Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
             return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the PropertyId with the Id, Please use a existing Id.").build();
@@ -75,16 +77,19 @@ public class HubService {
     }
 
     @PUT
+    @Secured({Role.yale})
     public HubDTO update(HubDTO dto) {
         return (HubDTO) hubLogic.update(dto);
     }
-     @DELETE
+
+    @DELETE
     @Path("/{id}")
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         LockLogic ll = new LockLogic();
         List<LockDTO> lista = ll.findLockByHubId(id);
         try {
-            for(LockDTO l : lista){
+            for (LockDTO l : lista) {
                 ll.delete(l.getId());
             }
             hubLogic.delete(id);

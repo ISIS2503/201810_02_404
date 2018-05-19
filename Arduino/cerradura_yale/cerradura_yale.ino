@@ -77,7 +77,7 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, rows, cols );
 /**
  * Tiempo entre HEALTCHECK
  */
-const int healtCheckTime = 100; // In milliseconds.
+const int healtCheckTime = 10000; // In milliseconds.
 /**
  * Máximo tiempo de la puerta abierta
  */
@@ -103,11 +103,13 @@ unsigned long mSLB;
 boolean isOpen = false;
 boolean block = false;
 boolean lowBattery = false;
+boolean horario = false;
 int id = 555;
 String inputString = "";
 String commandString = "";
 int indexPassword = -1;
 int newPassword = 0;
+int idUsuario = 1;
 
 int tries = 0;
 
@@ -133,7 +135,7 @@ void loop() {
   receiveData();
   // Envía el HEALTCHECK
   if (millis() > mSHC + healtCheckTime) {
-    //Serial.print(mensaje(-1));
+    Serial.println(mensaje(-1));
     mSHC = millis();
   }
   
@@ -150,8 +152,8 @@ void loop() {
   }
   
   if (lowBattery && millis() > mSLB + maxLowBattery) {
-    //Serial.println(mensaje(3));
-    //tone(buzzer, 370, 2000);
+    Serial.println(mensaje(3));
+    tone(buzzer, 370, 2000);
     mSLB = millis();
   }
   
@@ -224,7 +226,13 @@ void loop() {
           } else {
             password = "";
             digitalWrite(buzzer, HIGH);
-            if (++tries >= INTENTOS) {
+            if (horario) {
+              Serial.println(mensaje(4));
+              analogWrite(R, 0);
+              analogWrite(G, 255);
+              analogWrite(B, 255);
+              delay(1000);
+            } else if (++tries >= INTENTOS) {
               Serial.println(mensaje(1));
               analogWrite(R, 0);
               analogWrite(G, 255);
@@ -252,7 +260,7 @@ void receiveData() {
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
-    if (inChar == '-') {
+    if (inChar == '\n') {
       switch (newPassword) {
         case 0:
           commandString = inputString;
@@ -318,6 +326,16 @@ String mensaje(int tipo){
   return temp2;
 }
 
+
+/**
+* Prepara una trama de datos de horarios 
+**/
+String mensajeHorario(){
+  String temp = "HORARIO::";
+  temp += idUsuario;
+  return temp;
+}
+
 //----------------------------------------------
 // Método de las contaseñas.
 //-----------------------------------------------
@@ -334,7 +352,8 @@ boolean compareKey(String key) {
         arg1 = EEPROM.read(acc+1)*256;
         arg1+= arg0;
         if(String(arg1)==key) {
-          return true;
+          horario = comprobarHorarios();
+          return horario;
         }
       }
       acc+=2;
@@ -343,6 +362,17 @@ boolean compareKey(String key) {
     acc=(i+1)*16+3;
   }
   return false;
+}
+
+boolean comprobarHorarios() {
+  Serial.println(mensajeHorario());
+  String rta = "";
+  while (true) {
+    if (Serial.available()) {
+      char inChar = (char) Serial.read();
+      return inChar == '*';
+    }
+  }
 }
 
 //Method that adds a password in the specified index

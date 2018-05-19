@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 
 //DEFINES
-#define TOPIC_SUBSCRIBE        "clave.apto1"
-#define TOPIC_PUBLISH          "alerta.apto1"
+#define TOPIC_SUBSCRIBE        "info_hub.apto1"
+#define TOPIC_PUBLISH          "info_ino.apto1"
 #define SIZE_BUFFER_DATA       50
 
 //VARIABLES
@@ -18,8 +18,8 @@ WiFiClient    clientWIFI;
 PubSubClient  clientMQTT(clientWIFI);
 
 // CONFIG WIFI
-const char* ssid = "MiRedWifi";
-const char* password = "123456";
+const char* ssid = "isis2503";
+const char* password = "Yale2018.";
 
 // CONFIG MQTT
 IPAddress serverMQTT (172,24,42,107);

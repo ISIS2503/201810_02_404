@@ -60,7 +60,7 @@ public class PropertyService {
     }
 
     @POST
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response add(PropertyDTO dto) {          
         ResidentialUnitLogic rul = new ResidentialUnitLogic();       
         try {
@@ -74,27 +74,27 @@ public class PropertyService {
     }
 
     @PUT
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public PropertyDTO update(PropertyDTO dto) {
         return (PropertyDTO) propertyLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public PropertyDTO find(@PathParam("id") String id) {
         return (PropertyDTO) propertyLogic.find(id);
     }
 
     @GET
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public List<PropertyDTO> findAll() {
         return propertyLogic.findAll();
     }
 
     @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         HubLogic hl = new HubLogic();
         LockLogic ll = new LockLogic();      

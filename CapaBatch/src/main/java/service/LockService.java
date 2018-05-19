@@ -49,7 +49,6 @@ import model.dto.model.LockDTO;
 import model.dto.model.PassDTO;
 
 @Path("/lock")
-@Secured({Role.admin})
 @Produces(MediaType.APPLICATION_JSON)
 public class LockService {
 
@@ -58,35 +57,41 @@ public class LockService {
     public LockService() {
         this.lockLogic = new LockLogic();
     }
-    
+
     @GET
+    @Secured({Role.yale})
     public List<LockDTO> all() {
         return lockLogic.findAll();
     }
+
     @POST
+    @Secured({Role.yale})
     public Response add(LockDTO dto) {
-        HubLogic hl = new HubLogic();       
+        HubLogic hl = new HubLogic();
         try {
             HubDTO he = hl.find(dto.getIdHub());
             lockLogic.add(dto);
-            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Lock was added").build();                
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").entity("Sucessful: Lock was added").build();
         } catch (Exception e) {
             Logger.getLogger(PropertyService.class).log(Level.WARNING, e.getMessage());
             return Response.status(500).header("Access-Control-Allow-Origin", "*").entity("We dont found the Hub with the Id, Please use a existing Id.").build();
-        }        
+        }
     }
 
     @PUT
+    @Secured({Role.yale})
     public LockDTO update(LockDTO dto) {
         return (LockDTO) lockLogic.update(dto);
     }
-     @DELETE
+
+    @DELETE
     @Path("/{id}")
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         PassLogic pl = new PassLogic();
         List<PassDTO> lista = pl.findPassByLockId(id);
         try {
-            for(PassDTO l : lista){
+            for (PassDTO l : lista) {
                 pl.delete(l.getId());
             }
             lockLogic.delete(id);

@@ -56,13 +56,13 @@ public class ScheduleService {
     }
     
     @GET
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public List<ScheduleDTO> findAll() {
         return scheduleLogic.findAll();
     }
     
     @POST
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response add(ScheduleDTO dto) {
         UserLogic ul = new UserLogic();
         try {
@@ -76,14 +76,14 @@ public class ScheduleService {
     }
 
     @PUT
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public ScheduleDTO update(ScheduleDTO dto) {
         return (ScheduleDTO) scheduleLogic.update(dto);
     }
     
     @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         try {
             scheduleLogic.delete(id);

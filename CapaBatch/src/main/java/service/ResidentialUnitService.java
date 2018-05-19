@@ -60,33 +60,33 @@ public class ResidentialUnitService {
     }
 
     @POST
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public ResidentialUnitDTO add(ResidentialUnitDTO dto) {
         return (ResidentialUnitDTO) residentialUnitLogic.add(dto);
     }
 
     @PUT
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public ResidentialUnitDTO update(ResidentialUnitDTO dto) {
         return (ResidentialUnitDTO) residentialUnitLogic.update(dto);
     }
 
     @GET
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public ResidentialUnitDTO find(@PathParam("id") String id) {
         return (ResidentialUnitDTO) residentialUnitLogic.find(id);
     }
 
     @GET
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public List<ResidentialUnitDTO> findAll() {
         return residentialUnitLogic.findAll();
     }
 
     @DELETE
     @Path("/{id}")
-    @Secured({Role.admin})
+    @Secured({Role.yale})
     public Response delete(@PathParam("id") String id) {
         PropertyLogic pl = new PropertyLogic();
         HubLogic hl = new HubLogic();

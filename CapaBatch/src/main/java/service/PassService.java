@@ -53,7 +53,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
  */
 @Path("/passwords")
 @Consumes(MediaType.APPLICATION_JSON)
-@Secured({Role.client})
 public class PassService {
     
     private final static String ADD_COMMAND = "ADD_PASSWORD";
@@ -70,6 +69,7 @@ public class PassService {
     }
     
     @POST
+    @Secured({Role.client, Role.yale})
     public Response addPass(PassDTO pass) throws MqttException {
         
         LockLogic ll = new LockLogic();       
@@ -97,6 +97,7 @@ public class PassService {
     }
     
     @PUT
+    @Secured({Role.client, Role.yale})
     public PassDTO changePass(PassDTO pass) throws MqttException {
         String message = CHANGE_COMMAND
                 + SEPARATOR 
@@ -111,6 +112,7 @@ public class PassService {
     }
     
     @DELETE
+    @Secured({Role.client, Role.yale})
     public Response deletePass(PassDTO pass) throws MqttException {
         String message = DELETE_COMMAND
                 + SEPARATOR 
@@ -129,6 +131,7 @@ public class PassService {
     
     @DELETE
     @Path("/all")
+    @Secured({Role.client, Role.yale})
     public String deleteAllPass() throws MqttException {
         String message = DELETE_ALL_COMMAND;
         new MqttPublisher("apto01")
@@ -139,11 +142,13 @@ public class PassService {
  
     @GET
     @Path("/{id}")
+    @Secured({Role.client, Role.yale})
     public PropertyDTO find(@PathParam("id") String id) {
         return (PropertyDTO) passLogic.find(id);
     }
 
     @GET
+    @Secured({Role.client, Role.yale})
     public List<PropertyDTO> findAll() {
         return passLogic.findAll();
     }

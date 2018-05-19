@@ -39,7 +39,6 @@ model/dto/converter/UserConverter.class
 model/dto/converter/HubConverter.class
 persistence/AlertPersistence.class
 persistence/SchedulePersistence.class
-.netbeans_automatic_build
 model/entity/UserEntity.class
 service/LockService.class
 logic/PropertyLogic.class
