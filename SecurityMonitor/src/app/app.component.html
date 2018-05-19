@@ -1,0 +1,17 @@
+<div class="wrapper">
+    <div class="sidebar" data-background-color="white" data-active-color="danger">
+        <sidebar-cmp></sidebar-cmp>
+    </div>
+    <div class="main-panel">
+        <navbar-cmp></navbar-cmp>
+        <div class="content" *ngIf="auth.isAuthenticated()">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="content" *ngIf="!auth.isAuthenticated()">
+            <a>First you have to Login!!!!</a>
+
+        </div>
+        <footer-cmp></footer-cmp>
+    </div>
+</div>
+<!--fixedplugin-cmp></fixedplugin-cmp-->

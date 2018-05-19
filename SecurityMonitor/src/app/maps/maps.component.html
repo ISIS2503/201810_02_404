@@ -1,0 +1,14 @@
+<div class="container-fluid">
+    <div class="card card-map">
+        <div class="header">
+            <h4 class="title">Residential Unit ----------- </h4>
+        </div>
+    <br>
+        <ngui-map style="height: 550px;" zoom="13" center="40.748817,-73.985428" >
+         <marker [position]="[40.748817,-73.985428]"></marker>
+           <map-circle
+               [center]="{lat: 40.748817, lng: -73.985428}">
+           </map-circle>
+       </ngui-map>
+    </div>
+</div>
